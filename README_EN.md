@@ -26,11 +26,11 @@ This project is not only dedicated to software developers but is highly focused 
 
 | 🎯 Target User Cohort | 💡 Core Problems Resolved (Pain Points) | 🛠️ Recommended Tools |
 | :--- | :--- | :--- |
-| 🧑‍🏫 **Educators & Lab Administrators** | Restricting download actions, locking desktop wallpapers, or removing Windows lock screen Spotlight popup ads in classrooms/kiosks. | [Edge-Disable-Downloads](./system/Edge-禁止下载), [Disable-Wallpaper-Change](./system/禁止-修改壁纸), [Remove-Spotlight-Info](./system/移除-了解此图片) |
-| 🎬 **Content Creators & UI Designers** | Merging multiple voice recordings (MP3s) locally, or converting PNG/JPG images into high-fidelity Windows software icons (.ico). | [Image-to-ICO](./productivity/工具-图片转图标), [Audio-Merger](./productivity/工具-音频合并) |
+| 🧑‍🏫 **Educators & Lab Administrators** | Restricting download actions, locking desktop wallpapers, removing Windows lock screen ads; quick cross-device file sharing. | [Edge-Disable-Downloads](./system/Edge-禁止下载), [Disable-Wallpaper-Change](./system/禁止-修改壁纸), [Remove-Spotlight-Info](./system/移除-了解此图片), [LAN-File-Share](./network/工具-局域网极速文件共享器.py) |
+| 🎬 **Content Creators & UI Designers** | Merging audio clips locally, converting image formats to ICO; bulk extracting video frames at configurable time steps or manually. | [Image-to-ICO](./productivity/工具-图片转图标), [Audio-Merger](./productivity/工具-音频合并), [Video-Frame-Extractor](./vision/工具-批量视频截图提取器.py) |
 | 🧑‍🎓 **Language Learners & Students** | Joining interactive local network multiplayer word matching games to memory English vocabulary effortlessly while having fun. | [LAN-Word-Battle](./network/局域网-单词对战) |
 | 🧑‍💻 **Developers & AI Enthusiasts** | Accessing shared AI chat nodes over local network seamlessly; scanning files via AST to build code outlines for precise LLM Code Reviews. | [LAN-AI-Chat](./network/局域网-Ai对话), [Code-Structure-Outline-Generator](./productivity/工具-代码结构大纲生成器.py) |
-| 💼 **Office Workers & Time Managers** | Generating highly secure temporary passwords randomly, or displaying desktop dashboard clocks/precise count down timers for Pomodoro study. | [temporary_password.py](./productivity/临时密码.py), [dashboard_clock.py](./games_and_fun/全时钟.py), [countdown.py](./productivity/数字倒计时.py) |
+| 💼 **Office Workers & Time Managers** | Generating secure passwords randomly, displaying dashboard clocks; tracking clipboard history with quick zero-key EN/CN translations. | [temporary_password.py](./productivity/临时密码.py), [dashboard_clock.py](./games_and_fun/全时钟.py), [countdown.py](./productivity/数字倒计时.py), [Clipboard-Translator](./productivity/工具-简易剪贴板历史翻译器.py) |
 | 🤖 **Geeks & CV Algorithm Explorers** | Harnessing 21 landmarks hand skeletal tracing pipelines, or customizing green hacker code-rain screensavers and Turtle 3D roses. | [gesture_recognizer.py](./vision/手势识别.py), [hand_tracking.py](./vision/手部跟踪.py), [hacker_matrix.py](./games_and_fun/黑客特效.py) |
 
 ---
@@ -44,6 +44,7 @@ To help you quickly locate what you need, our tools are structured into five maj
 | :--- | :--- | :--- |
 | [局域网-Ai对话](./network/局域网-Ai对话) | `LAN-AI-Chat` | A local LAN server-client utility facilitating multi-device AI chats without complex configurations. |
 | [局域网-单词对战](./network/局域网-单词对战) | `LAN-Word-Battle` | An engaging LAN multiplayer English vocabulary battle game combining learning and fun. |
+| [工具-局域网极速文件共享器](./network/工具-局域网极速文件共享器.py) | `lan_file_share` | Exposes a beautiful web page for instant LAN file distribution and mobile-to-PC uploads without internet. |
 
 ### 2. 💻 System & Browser Optimization
 | Tool Name / Folder | English Tag | Description |
@@ -59,6 +60,7 @@ To help you quickly locate what you need, our tools are structured into five maj
 | [工具-图片转图标](./productivity/工具-图片转图标) | `Image-to-ICO` | Converts ordinary image formats (PNG/JPG) locally into high-resolution, multi-size Windows `.ico` icons. |
 | [工具-音频合并](./productivity/工具-音频合并) | `Audio-Merger` | Scans directories and concatenates multiple audio clips (e.g. MP3 files) effortlessly. |
 | [工具-代码结构大纲生成器.py](./productivity/工具-代码结构大纲生成器.py) | `code_outline_generator` | Scans files using Python's AST parser to extract classes, functions, and docstrings into a beautiful markdown outline. |
+| [工具-简易剪贴板历史翻译器.py](./productivity/工具-简易剪贴板历史翻译器.py) | `clipboard_translator` | Tracks copy history on the clipboard and delivers instant zero-key EN-CN bilingual translation. |
 | [临时密码.py](./productivity/临时密码.py) | `temp_password.py` | Generates highly secure, random passwords with customizable lengths and character sets. |
 | [数字倒计时.py](./productivity/数字倒计时.py) | `countdown.py` | A lightweight countdown timer with sound notifications precise to the second. |
 | [进度条.py](./productivity/进度条.py) | `progress_bar.py` | An elegant, animated CLI progress bar module designed for command-line developers. |
@@ -68,6 +70,7 @@ To help you quickly locate what you need, our tools are structured into five maj
 | :--- | :--- | :--- |
 | [手势识别.py](./vision/手势识别.py) | `gesture_recognizer.py` | Employs OpenCV & MediaPipe to recognize complex gestures and map them into Windows keyboard shortcuts. |
 | [手部跟踪.py](./vision/手部跟踪.py) | `hand_tracking.py` | Fast framework to capture camera video streams, locate 21 hand skeletal landmarks, and stream 3D coordinates. |
+| [工具-批量视频截图提取器.py](./vision/工具-批量视频截图提取器.py) | `video_frame_extractor` | Grabs frames from local videos sequentially by configurable time intervals or manually via slider. |
 
 ### 5. 🎮 Games & Interactive Edutainment
 | Tool Name / Script | English Tag | Description |

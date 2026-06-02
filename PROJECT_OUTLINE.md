@@ -115,6 +115,33 @@
 
 ---
 
+## 📄 脚本: [network\工具-局域网极速文件共享器.py](./network/工具-局域网极速文件共享器.py)
+
+**📖 模块简介**: 小宝工具箱 - 局域网极速文件共享器 (LAN File Share Server)
+功能：一键将电脑上的指定目录化身局域网文件共享中心，局域网内的任何手机、平板、电脑只需输入网页地址，
+     即可免流量、极速下载电脑上的文件，甚至支持直接在手机浏览器中向电脑上传文件。
+受众：教育工作者、教师（一键分发课件）、日常跨平台（手机到电脑）临时传输大文件的办公人员。
+
+
+| 节点类型 | 名称 | 所在行数 | 核心功能简介 |
+| :--- | :--- | :--- | :--- |
+| 🏫 **类 (Class)** | `CustomHTTPRequestHandler` | L23 | 自定义 HTTP 请求处理器，在标准 SimpleHTTPRequestHandler 上提供文件上传能力 |
+| 🔹 *方法 (Method)* | `CustomHTTPRequestHandler.do_POST` | L25 | 处理局域网内其他设备上传文件的 POST 请求 |
+| 🔹 *方法 (Method)* | `CustomHTTPRequestHandler.list_directory` | L112 | 重写目录列表生成方法，在页面顶部注入一个精致的文件上传 HTML 表单 |
+| 🏫 **类 (Class)** | `LANShareApp` | L193 | 无类说明文档 |
+| 🔹 *方法 (Method)* | `LANShareApp.__init__` | L194 | 无函数说明文档 |
+| 🔹 *方法 (Method)* | `LANShareApp.get_local_ip` | L209 | 自动提取电脑所在的局域网真实 IP 地址 |
+| 🔹 *方法 (Method)* | `LANShareApp.setup_ui` | L222 | 无函数说明文档 |
+| 🔹 *方法 (Method)* | `LANShareApp.select_directory` | L258 | 无函数说明文档 |
+| 🔹 *方法 (Method)* | `LANShareApp.start_http_server` | L267 | 开启 HTTP 共享服务的线程核心逻辑 |
+| 🏫 **类 (Class)** | `CustomHTTPHandler` | L271 | 无类说明文档 |
+| 🔹 *方法 (Method)* | `CustomHTTPHandler.__init__` | L272 | 无函数说明文档 |
+| 🔹 *方法 (Method)* | `LANShareApp.toggle_server` | L284 | 无函数说明文档 |
+| 🔹 *方法 (Method)* | `LANShareApp.reset_ui_to_stopped` | L318 | 无函数说明文档 |
+| ⚙️ **函数 (Func)** | `on_app_closing` | L331 | 无函数说明文档 |
+
+---
+
 ## 📄 脚本: [productivity\临时密码.py](./productivity/临时密码.py)
 
 **📖 模块简介**: 无模块整体功能介绍。
@@ -130,6 +157,29 @@
 | 🔹 *方法 (Method)* | `NewPasswordWindow.__init__` | L58 | 无函数说明文档 |
 | 🔹 *方法 (Method)* | `NewPasswordWindow.reset_password` | L96 | 无函数说明文档 |
 | 🔹 *方法 (Method)* | `NewPasswordWindow.generate_temp_password` | L115 | 无函数说明文档 |
+
+---
+
+## 📄 脚本: [productivity\工具-简易剪贴板历史翻译器.py](./productivity/工具-简易剪贴板历史翻译器.py)
+
+**📖 模块简介**: 小宝工具箱 - 简易剪贴板历史翻译器 (Clipboard History & Quick Translator)
+功能：后台静默监听系统剪贴板，自动记录历史复制内容，提供一键翻译（中英互译，基于免 key 翻译 API）并一键写回剪贴板。
+受众：阅读外文文献的学生、处理跨国业务/英文报告的办公族、频繁复制粘贴的人员。
+
+
+| 节点类型 | 名称 | 所在行数 | 核心功能简介 |
+| :--- | :--- | :--- | :--- |
+| 🏫 **类 (Class)** | `ClipboardTranslatorApp` | L16 | 无类说明文档 |
+| 🔹 *方法 (Method)* | `ClipboardTranslatorApp.__init__` | L17 | 无函数说明文档 |
+| 🔹 *方法 (Method)* | `ClipboardTranslatorApp.setup_ui` | L30 | 无函数说明文档 |
+| 🔹 *方法 (Method)* | `ClipboardTranslatorApp.monitor_clipboard` | L72 | 主循环：每隔 500 毫秒轮询系统剪贴板，检测文本变更 |
+| 🔹 *方法 (Method)* | `ClipboardTranslatorApp.update_listbox` | L100 | 无函数说明文档 |
+| 🔹 *方法 (Method)* | `ClipboardTranslatorApp.copy_selected_to_clipboard` | L109 | 双击条目，重新将其完整复制回系统剪贴板 |
+| 🔹 *方法 (Method)* | `ClipboardTranslatorApp.copy_translation` | L121 | 无函数说明文档 |
+| 🔹 *方法 (Method)* | `ClipboardTranslatorApp.clear_history` | L131 | 无函数说明文档 |
+| 🔹 *方法 (Method)* | `ClipboardTranslatorApp.translate_selected` | L137 | 多线程调用免费 MyMemory API 进行翻译，防 GUI 卡顿 |
+| 🔹 *方法 (Method)* | `ClipboardTranslatorApp.run_translation` | L153 | 调用免费无限制的 MyMemory API 进行中英判定与翻译 |
+| 🔹 *方法 (Method)* | `ClipboardTranslatorApp.show_translation_result` | L183 | 无函数说明文档 |
 
 ---
 
@@ -248,6 +298,28 @@
 | ⚙️ **函数 (Func)** | `modify_registry` | L18 | 直接修改注册表 |
 | ⚙️ **函数 (Func)** | `restart_explorer` | L33 | 重启资源管理器 |
 | ⚙️ **函数 (Func)** | `main` | L47 | 无函数说明文档 |
+
+---
+
+## 📄 脚本: [vision\工具-批量视频截图提取器.py](./vision/工具-批量视频截图提取器.py)
+
+**📖 模块简介**: 小宝工具箱 - 批量视频截图提取器 (Video Frame Extractor)
+功能：一键载入本地任意格式视频（MP4/MKV/AVI等），支持配置等时间步长（例如每 5 秒提取一张）全自动无损批量导出高清截图；
+     同时提供预览滑块，支持手动单张截取精准画面帧。截图自动归档保存于专属目录下。
+受众：影视解说自媒体人、影视创作者、写电影剧透解析的内容博主、计算机视觉数据集采集人员。
+
+
+| 节点类型 | 名称 | 所在行数 | 核心功能简介 |
+| :--- | :--- | :--- | :--- |
+| 🏫 **类 (Class)** | `VideoExtractorApp` | L26 | 无类说明文档 |
+| 🔹 *方法 (Method)* | `VideoExtractorApp.__init__` | L27 | 无函数说明文档 |
+| 🔹 *方法 (Method)* | `VideoExtractorApp.setup_ui` | L42 | 无函数说明文档 |
+| 🔹 *方法 (Method)* | `VideoExtractorApp.select_video` | L110 | 无函数说明文档 |
+| 🔹 *方法 (Method)* | `VideoExtractorApp.on_slider_move` | L134 | 当用户拖动滑块时，估算时间点并显示 |
+| 🔹 *方法 (Method)* | `VideoExtractorApp.start_extraction` | L148 | 核心批量提取控制器 |
+| 🔹 *方法 (Method)* | `VideoExtractorApp.run_batch_extraction` | L176 | 子线程运行的批量提取核心循环 |
+| 🔹 *方法 (Method)* | `VideoExtractorApp.grab_single_frame` | L231 | 精准提取滑块选定的一帧并保存 |
+| 🔹 *方法 (Method)* | `VideoExtractorApp.reset_buttons` | L259 | 无函数说明文档 |
 
 ---
 
