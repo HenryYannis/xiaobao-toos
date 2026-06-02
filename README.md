@@ -25,41 +25,41 @@
 ### 1. 🛜 局域网与网络联机 (Network & LAN Utilities)
 | 工具名称/文件夹 | 英文标识 | 核心功能简介 |
 | :--- | :--- | :--- |
-| [局域网-Ai对话](./局域网-Ai对话) | `LAN-AI-Chat` | 本地局域网内提供多端 AI 对话的前后端交互工具，实现局域网设备免梯免配置共享 AI 能力。 |
-| [局域网-单词对战](./局域网-单词对战) | `LAN-Word-Battle` | 局域网内与好友进行英语单词记忆和对战的多人联机小游戏，兼顾趣味与学习。 |
+| [局域网-Ai对话](./network/局域网-Ai对话) | `LAN-AI-Chat` | 本地局域网内提供多端 AI 对话的前后端交互工具，实现局域网设备免梯免配置共享 AI 能力。 |
+| [局域网-单词对战](./network/局域网-单词对战) | `LAN-Word-Battle` | 局域网内与好友进行英语单词记忆和对战的多人联机小游戏，兼顾趣味与学习。 |
 
 ### 2. 💻 系统管理与浏览器控制 (System & Browser Optimization)
 | 工具名称/文件夹 | 英文标识 | 核心功能简介 |
 | :--- | :--- | :--- |
-| [Edge-禁止下载](./Edge-禁止下载) | `Edge-Disable-Downloads` | 通过注册表与组策略，安全快捷地禁用 Edge 浏览器下载功能，适合公共机器、机房或少儿教学环境。 |
-| [Edge-联网控制](./Edge-联网控制) | `Edge-Internet-Control` | 限制或解除 Edge 浏览器联网权限的实用底层脚本。 |
-| [禁止-修改壁纸](./禁止-修改壁纸) | `Disable-Wallpaper-Change` | 限制用户修改 Windows 桌面壁纸，防误触/统一企业展示或展台的桌面配置工具。 |
-| [移除-了解此图片](./移除-了解此图片) | `Remove-Spotlight-Info` | 一键移除 Windows 聚焦锁屏界面右上方繁琐的“了解此图片”浮窗，让锁屏界面重回极简干净。 |
+| [Edge-禁止下载](./system/Edge-禁止下载) | `Edge-Disable-Downloads` | 通过注册表与组策略，安全快捷地禁用 Edge 浏览器下载功能，适合公共机器、机房或少儿教学环境。 |
+| [Edge-联网控制](./system/Edge-联网控制) | `Edge-Internet-Control` | 限制或解除 Edge 浏览器联网权限的实用底层脚本。 |
+| [禁止-修改壁纸](./system/禁止-修改壁纸) | `Disable-Wallpaper-Change` | 限制用户修改 Windows 桌面壁纸，防误触/统一企业展示或展台的桌面配置工具。 |
+| [移除-了解此图片](./system/移除-了解此图片) | `Remove-Spotlight-Info` | 一键移除 Windows 聚焦锁屏界面右上方繁琐的“了解此图片”浮窗，让锁屏界面重回极简干净。 |
 
 ### 3. 🛠 办公自动化与实用程序 (Office Automation & Productivity)
 | 工具名称/脚本 | 英文标识 | 核心功能简介 |
 | :--- | :--- | :--- |
-| [工具-图片转图标](./工具-图片转图标) | `Image-to-ICO` | 本地快速将常用图片格式（PNG/JPG）一键转换为 Windows 支持的 `.ico` 图标，支持多分辨率合并。 |
-| [工具-音频合并](./工具-音频合并) | `Audio-Merger` | 快速扫描目录并拼接合并多段音频（如 MP3 拼接）的实用多媒体处理脚本。 |
-| [临时密码.py](./临时密码.py) | `temp_password.py` | 快速生成包含大小写字母、数字和符号的高强度随机临时密码，保障日常账户安全。 |
-| [数字倒计时.py](./数字倒计时.py) | `countdown.py` | 精确到秒的轻量级数字倒计时及声音提醒程序。 |
-| [进度条.py](./进度条.py) | `progress_bar.py` | 提供给终端和命令行开发者使用的优雅、动感命令行进度条输出模块。 |
+| [工具-图片转图标](./productivity/工具-图片转图标) | `Image-to-ICO` | 本地快速将常用图片格式（PNG/JPG）一键转换为 Windows 支持的 `.ico` 图标，支持多分辨率合并。 |
+| [工具-音频合并](./productivity/工具-音频合并) | `Audio-Merger` | 快速扫描目录并拼接合并多段音频（如 MP3 拼接）的实用多媒体处理脚本。 |
+| [临时密码.py](./productivity/临时密码.py) | `temp_password.py` | 快速生成包含大小写字母、数字和符号的高强度随机临时密码，保障日常账户安全。 |
+| [数字倒计时.py](./productivity/数字倒计时.py) | `countdown.py` | 精确到秒的轻量级数字倒计时及声音提醒程序。 |
+| [进度条.py](./productivity/进度条.py) | `progress_bar.py` | 提供给终端和命令行开发者使用的优雅、动感命令行进度条输出模块。 |
 
 ### 4. 👁 人机交互与视觉算法 (Interaction & Vision Algorithms)
 | 工具名称/脚本 | 英文标识 | 核心功能简介 |
 | :--- | :--- | :--- |
-| [手势识别.py](./手势识别.py) | `gesture_recognizer.py` | 基于 OpenCV 和 MediaPipe 框架，识别复杂手势并触发特定 Windows 系统快捷操作的演示程序。 |
-| [手部跟踪.py](./手部跟踪.py) | `hand_tracking.py` | 快速在摄像头视频流中定位手部 21 个核心关键点，并实时输出三维坐标的基础框架。 |
+| [手势识别.py](./vision/手势识别.py) | `gesture_recognizer.py` | 基于 OpenCV 和 MediaPipe 框架，识别复杂手势并触发特定 Windows 系统快捷操作的演示程序。 |
+| [手部跟踪.py](./vision/手部跟踪.py) | `hand_tracking.py` | 快速在摄像头视频流中定位手部 21 个核心关键点，并实时输出三维坐标的基础框架。 |
 
 ### 5. 🎮 趣味娱乐与科普教育 (Games & Interactive Edutainment)
 | 工具名称/脚本 | 英文标识 | 核心功能简介 |
 | :--- | :--- | :--- |
-| [井字棋.py](./井字棋.py) | `tic_tac_toe.py` | 支持双人对战的经典 GUI（基于 Tkinter）井字棋交互游戏。 |
-| [时钟.py](./时钟.py) | `clock.py` | 界面极简精致的桌面数字电子时钟，便于工作区挂置。 |
-| [全时钟.py](./全时钟.py) | `dashboard_clock.py` | 交互功能丰富的仪表盘式全时钟，提供多时区、倒计时、闹钟与状态记录看板。 |
-| [黑客特效.py](./黑客特效.py) | `hacker_matrix.py` | 基于 Pygame 的经典《黑客帝国》数字雨特效壁纸与屏幕保护运行脚本。 |
-| [玫瑰花程序.py](./玫瑰花程序.py) | `turtle_rose.py` | 使用 Python Turtle 画笔绘制的三维立体玫瑰花动画程序，具有极高的几何拟真度。 |
-| [破译程序.py](./破译程序.py) | `cipher_decrypter.py` | 演示字符置换加密与暴力破解过程的密码学教育科普工具，带你初识密码破译。 |
+| [井字棋.py](./games_and_fun/井字棋.py) | `tic_tac_toe.py` | 支持双人对战的经典 GUI（基于 Tkinter）井字棋交互游戏。 |
+| [时钟.py](./games_and_fun/时钟.py) | `clock.py` | 界面极简精致的桌面数字电子时钟，便于工作区挂置。 |
+| [全时钟.py](./games_and_fun/全时钟.py) | `dashboard_clock.py` | 交互功能丰富的仪表盘式全时钟，提供多时区、倒计时、闹钟与状态记录看板。 |
+| [黑客特效.py](./games_and_fun/黑客特效.py) | `hacker_matrix.py` | 基于 Pygame 的经典《黑客帝国》数字雨特效壁纸与屏幕保护运行脚本。 |
+| [玫瑰花程序.py](./games_and_fun/玫瑰花程序.py) | `turtle_rose.py` | 使用 Python Turtle 画笔绘制的三维立体玫瑰花动画程序，具有极高的几何拟真度。 |
+| [破译程序.py](./games_and_fun/破译程序.py) | `cipher_decrypter.py` | 演示字符置换加密与暴力破解过程的密码学教育科普工具，带你初识密码破译。 |
 
 ---
 
