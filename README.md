@@ -1,5 +1,7 @@
 # 🛠 小宝工具箱 (xiaobao-tools)
 
+🌐 **简体中文 | [English](./README_EN.md)**
+
 [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/HenryYannis/xiaobao-toos)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python Version](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-blue.svg)](https://www.python.org/)
@@ -15,6 +17,21 @@
 1. **零门槛，开箱即用**：绝大多数工具为单一 `.py` 文件，无复杂配置，极速双击或命令行启动。
 2. **场景丰富，解决刚需**：涵盖日常办公、局域网娱乐联机、人机交互体验、多媒体处理、系统底层优化等多维应用场景。
 3. **高规范与自动化**：集成了 GitHub Actions 自动化检查流，遵循 PEP 8 代码规范，并规划了完善的 **OpenAI Codex AI 辅助工作流**。
+
+---
+
+## 🎯 用户群体与核心解决需求对照 (Target Audiences & Scenarios Matrix)
+
+本项目不仅面向软件开发者，更致力于通过轻量级的自动化方案，服务于日常生活中各种不同背景、有不同特定需求的用户群体。以下是本项目核心工具所覆盖的六大典型用户与解决场景：
+
+| 🎯 目标用户群体 | 💡 核心解决需求 (痛点) | 🛠️ 推荐小工具 |
+| :--- | :--- | :--- |
+| 🧑‍🏫 **教育工作者与机房管理员** | 想要在少儿编程课或公共机房中，限制用户随意下载、乱改壁纸，或移除繁琐的 Windows 锁屏悬浮小广告。 | [Edge-禁止下载](./system/Edge-禁止下载), [禁止-修改壁纸](./system/禁止-修改壁纸), [移除-了解此图片](./system/移除-了解此图片) |
+| 🎬 **新媒体创作者与设计师** | 在本地快速进行多段语音拼接录音（如 MP3 合并），或者将 PNG/JPG 一键转成高保真 Windows 软件图标（ICO）。 | [工具-图片转图标](./productivity/工具-图片转图标), [工具-音频合并](./productivity/工具-音频合并) |
+| 🧑‍🎓 **外语学习者与青少年** | 希望和身边的同学在局域网内，通过趣味单词联机对战，在互动娱乐中加深英语单词记忆。 | [局域网-单词对战](./network/局域网-单词对战) |
+| 🧑‍💻 **独立开发者与 AI 狂热者** | 想要在本地免代理搭建局域网 AI 共享网关；或者一键提取项目所有脚本大纲，供大模型精准进行 Code Review。 | [局域网-Ai对话](./network/局域网-Ai对话), [工具-代码结构大纲生成器.py](./productivity/工具-代码结构大纲生成器.py) |
+| 💼 **普通办公族与效率达人** | 频繁需要随机生成高强度账户临时密码，或者是桌面上需要挂置清爽的多功能时钟与精确倒计时，辅助时间管理。 | [临时密码.py](./productivity/临时密码.py), [全时钟.py](./games_and_fun/全时钟.py), [数字倒计时.py](./productivity/数字倒计时.py) |
+| 🤖 **极客爱好者与算法探索者** | 想要探秘人手 21 个骨骼点识别底座，或者体验酷炫的绿雨代码雨屏保、纯画笔绘制 3D 玫瑰艺术动画。 | [手势识别.py](./vision/手势识别.py), [手部跟踪.py](./vision/手部跟踪.py), [黑客特效.py](./games_and_fun/黑客特效.py) |
 
 ---
 
@@ -41,6 +58,7 @@
 | :--- | :--- | :--- |
 | [工具-图片转图标](./productivity/工具-图片转图标) | `Image-to-ICO` | 本地快速将常用图片格式（PNG/JPG）一键转换为 Windows 支持的 `.ico` 图标，支持多分辨率合并。 |
 | [工具-音频合并](./productivity/工具-音频合并) | `Audio-Merger` | 快速扫描目录并拼接合并多段音频（如 MP3 拼接）的实用多媒体处理脚本。 |
+| [工具-代码结构大纲生成器.py](./productivity/工具-代码结构大纲生成器.py) | `code_outline_generator` | 一键扫描项目，提取其中所有的类、函数定义及文档注释(Docstring)，自动生成精美的项目大纲文档，方便开发者或 AI (Codex) 快速阅读代码架构。 |
 | [临时密码.py](./productivity/临时密码.py) | `temp_password.py` | 快速生成包含大小写字母、数字和符号的高强度随机临时密码，保障日常账户安全。 |
 | [数字倒计时.py](./productivity/数字倒计时.py) | `countdown.py` | 精确到秒的轻量级数字倒计时及声音提醒程序。 |
 | [进度条.py](./productivity/进度条.py) | `progress_bar.py` | 提供给终端和命令行开发者使用的优雅、动感命令行进度条输出模块。 |
