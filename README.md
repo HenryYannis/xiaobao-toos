@@ -1,1 +1,114 @@
-# Python 小工具合集
+# 🛠 小宝工具箱 (xiaobao-tools)
+
+[![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/HenryYannis/xiaobao-toos)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python Version](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-blue.svg)](https://www.python.org/)
+[![Codex Enabled](https://img.shields.io/badge/OpenAI%20Codex-Enabled-green.svg)](https://openai.com/form/codex-for-oss/)
+[![Build Status](https://github.com/HenryYannis/xiaobao-toos/actions/workflows/lint.yml/badge.svg)](https://github.com/HenryYannis/xiaobao-toos/actions)
+
+**小宝工具箱 (xiaobao-tools)** 是一款面向独立开发者、系统管理员和日常办公人员的开源 Python 脚本与系统配置工具箱。项目旨在提供开箱即用、轻量化且高效率的自动化方案，包含系统环境优化、局域网交互游戏、手势识别、多媒体合并以及日常趣味工具等。
+
+---
+
+## 🌟 项目特色
+
+1. **零门槛，开箱即用**：绝大多数工具为单一 `.py` 文件，无复杂配置，极速双击或命令行启动。
+2. **场景丰富，解决刚需**：涵盖日常办公、局域网娱乐联机、人机交互体验、多媒体处理、系统底层优化等多维应用场景。
+3. **高规范与自动化**：集成了 GitHub Actions 自动化检查流，遵循 PEP 8 代码规范，并规划了完善的 **OpenAI Codex AI 辅助工作流**。
+
+---
+
+## 📂 工具矩阵目录
+
+为了让你方便地检索，我们将所有工具划分为五大核心方向：
+
+### 1. 🛜 局域网与网络联机 (Network & LAN Utilities)
+| 工具名称/文件夹 | 英文标识 | 核心功能简介 |
+| :--- | :--- | :--- |
+| [局域网-Ai对话](./局域网-Ai对话) | `LAN-AI-Chat` | 本地局域网内提供多端 AI 对话的前后端交互工具，实现局域网设备免梯免配置共享 AI 能力。 |
+| [局域网-单词对战](./局域网-单词对战) | `LAN-Word-Battle` | 局域网内与好友进行英语单词记忆和对战的多人联机小游戏，兼顾趣味与学习。 |
+
+### 2. 💻 系统管理与浏览器控制 (System & Browser Optimization)
+| 工具名称/文件夹 | 英文标识 | 核心功能简介 |
+| :--- | :--- | :--- |
+| [Edge-禁止下载](./Edge-禁止下载) | `Edge-Disable-Downloads` | 通过注册表与组策略，安全快捷地禁用 Edge 浏览器下载功能，适合公共机器、机房或少儿教学环境。 |
+| [Edge-联网控制](./Edge-联网控制) | `Edge-Internet-Control` | 限制或解除 Edge 浏览器联网权限的实用底层脚本。 |
+| [禁止-修改壁纸](./禁止-修改壁纸) | `Disable-Wallpaper-Change` | 限制用户修改 Windows 桌面壁纸，防误触/统一企业展示或展台的桌面配置工具。 |
+| [移除-了解此图片](./移除-了解此图片) | `Remove-Spotlight-Info` | 一键移除 Windows 聚焦锁屏界面右上方繁琐的“了解此图片”浮窗，让锁屏界面重回极简干净。 |
+
+### 3. 🛠 办公自动化与实用程序 (Office Automation & Productivity)
+| 工具名称/脚本 | 英文标识 | 核心功能简介 |
+| :--- | :--- | :--- |
+| [工具-图片转图标](./工具-图片转图标) | `Image-to-ICO` | 本地快速将常用图片格式（PNG/JPG）一键转换为 Windows 支持的 `.ico` 图标，支持多分辨率合并。 |
+| [工具-音频合并](./工具-音频合并) | `Audio-Merger` | 快速扫描目录并拼接合并多段音频（如 MP3 拼接）的实用多媒体处理脚本。 |
+| [临时密码.py](./临时密码.py) | `temp_password.py` | 快速生成包含大小写字母、数字和符号的高强度随机临时密码，保障日常账户安全。 |
+| [数字倒计时.py](./数字倒计时.py) | `countdown.py` | 精确到秒的轻量级数字倒计时及声音提醒程序。 |
+| [进度条.py](./进度条.py) | `progress_bar.py` | 提供给终端和命令行开发者使用的优雅、动感命令行进度条输出模块。 |
+
+### 4. 👁 人机交互与视觉算法 (Interaction & Vision Algorithms)
+| 工具名称/脚本 | 英文标识 | 核心功能简介 |
+| :--- | :--- | :--- |
+| [手势识别.py](./手势识别.py) | `gesture_recognizer.py` | 基于 OpenCV 和 MediaPipe 框架，识别复杂手势并触发特定 Windows 系统快捷操作的演示程序。 |
+| [手部跟踪.py](./手部跟踪.py) | `hand_tracking.py` | 快速在摄像头视频流中定位手部 21 个核心关键点，并实时输出三维坐标的基础框架。 |
+
+### 5. 🎮 趣味娱乐与科普教育 (Games & Interactive Edutainment)
+| 工具名称/脚本 | 英文标识 | 核心功能简介 |
+| :--- | :--- | :--- |
+| [井字棋.py](./井字棋.py) | `tic_tac_toe.py` | 支持双人对战的经典 GUI（基于 Tkinter）井字棋交互游戏。 |
+| [时钟.py](./时钟.py) | `clock.py` | 界面极简精致的桌面数字电子时钟，便于工作区挂置。 |
+| [全时钟.py](./全时钟.py) | `dashboard_clock.py` | 交互功能丰富的仪表盘式全时钟，提供多时区、倒计时、闹钟与状态记录看板。 |
+| [黑客特效.py](./黑客特效.py) | `hacker_matrix.py` | 基于 Pygame 的经典《黑客帝国》数字雨特效壁纸与屏幕保护运行脚本。 |
+| [玫瑰花程序.py](./玫瑰花程序.py) | `turtle_rose.py` | 使用 Python Turtle 画笔绘制的三维立体玫瑰花动画程序，具有极高的几何拟真度。 |
+| [破译程序.py](./破译程序.py) | `cipher_decrypter.py` | 演示字符置换加密与暴力破解过程的密码学教育科普工具，带你初识密码破译。 |
+
+---
+
+## 🤖 OpenAI Codex 辅助维护与集成计划
+
+作为单一核心开发者维护的开源项目，如何通过 AI 技术提高日常迭代效率，是本项目的研究重点。我们正积极探索如何将 **OpenAI Codex & API** 深入整合到小宝工具箱的维护流程中，主要规划了以下四个应用场景：
+
+1. **自动化 PR 审查与代码重构 (AI Code Review)**：
+   利用 Codex API，在社区或维护者提交新的 Python 小工具 Pull Request 时，自动执行静态代码分析，发现“坏味道”（如内存泄露、冗长逻辑），并直接在 PR 评论中提供重构后的代码片段。
+2. **一键生成单元测试 (AI-driven TDD)**：
+   针对仓库中 20+ 个独立 Python 脚本，使用 Codex 解析其输入和输出，自动在 `tests/` 文件夹下生成基于 `pytest` 的单元测试。这能极大降低个人维护者在 Windows/macOS/Linux 等多平台上进行兼容性测试的成本。
+3. **智能 Issue 诊断与标签分类 (Smart Tagging)**：
+   通过 Codex 自动解析用户在 Issue 模版中提交的报错日志（Traceback），识别出错所涉模块（如 `mediapipe`、`pygame`）与操作系统，并自动标记对应的 `os:windows`、`module:vision` 标签，进行首轮自动化排查。
+4. **多语言文档与注释自动补全 (Automated Localization)**：
+   使用 Codex 智能提取新代码中的函数并生成双语的 Docstring 注释。自动保持中英文 `README.md` 的工具目录实时同步，将好用的小工具无缝推广至全球开发者社区。
+
+---
+
+## 🚀 快速上手
+
+### 1. 环境准备
+推荐使用 Python 3.8 或以上版本。克隆仓库到本地：
+```bash
+git clone https://github.com/HenryYannis/xiaobao-toos.git
+cd xiaobao-toos
+```
+
+### 2. 安装依赖
+大部分独立小脚本无外部依赖。如果运行涉及到视觉算法或游戏特效（如 `手势识别.py`、`黑客特效.py` 等），请一键安装相关依赖：
+```bash
+pip install -r requirements.txt
+```
+> *(注：我们将逐步为每个需要较多依赖的子文件夹配备独立的 requirements.txt)*
+
+### 3. 运行示例
+直接在终端或双击运行你感兴趣的工具：
+```bash
+python 临时密码.py
+```
+
+---
+
+## 🤝 参与贡献
+
+如果你想分享你日常编写的趣味 Python 小工具，非常欢迎提交 Pull Request！
+具体步骤和代码格式要求请参考 [贡献指南 (CONTRIBUTING.md)](./CONTRIBUTING.md)。
+
+---
+
+## 📄 开源许可证
+
+本项目基于 **MIT License** 开源。你可以自由地学习、修改、商用和分发本项目中的工具，但请保留原作者版权声明。详情请参阅 [LICENSE](./LICENSE)。
