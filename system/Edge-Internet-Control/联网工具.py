@@ -1,3 +1,26 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+小宝工具箱 - Edge 浏览器联网控制工具 (Edge Internet Control)
+
+功能：
+- 限制或解除 Edge 浏览器联网权限
+- 通过 Windows 防火墙规则控制
+- 支持 x86 和 x64 版本的 Edge
+
+使用方法：
+- 需要以管理员权限运行
+- 点击按钮切换 Edge 的联网状态
+
+注意事项：
+- 仅支持 Windows 系统
+- 需要管理员权限才能修改防火墙规则
+- 修改后需要重启 Edge 浏览器生效
+
+作者：小宝科技帝国
+日期：2024
+"""
+
 import os
 import sys
 import ctypes
@@ -12,7 +35,7 @@ def is_admin():
     """检查是否具有管理员权限"""
     try:
         return ctypes.windll.shell32.IsUserAnAdmin()
-    except:
+    except Exception:
         return False
 
 def run_as_admin():

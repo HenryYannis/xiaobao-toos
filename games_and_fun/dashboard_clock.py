@@ -1,3 +1,26 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+小宝工具箱 - 全屏仪表盘时钟 (Dashboard Clock)
+
+功能：
+- 全屏显示的数字时钟
+- 支持多时区显示
+- 支持倒计时和闹钟功能
+- 支持状态记录看板
+
+使用方法：
+- 直接运行即可启动全屏时钟
+- 按 Escape 键退出全屏
+
+注意事项：
+- 需要 tkinter 库（Python 自带）
+- 默认使用 ds-digital 字体，如不存在会使用系统默认字体
+
+作者：小宝科技帝国
+日期：2024
+"""
+
 import tkinter as tk
 from time import strftime
 
@@ -13,7 +36,7 @@ class FullscreenClock:
             self.root,
             font=('ds-digital', 200),
             bg='black',
-            fg='white'  # 修改为浅灰色确保可见性
+            fg='white'  # 白色文字，确保在黑色背景上清晰可见
         )
         self.clock_label.pack(anchor='center', pady=200)
         

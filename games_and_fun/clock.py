@@ -1,3 +1,25 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+小宝工具箱 - 海龟时钟 (Turtle Clock)
+
+功能：
+- 使用 Python Turtle 绘制的模拟时钟
+- 实时显示当前时间
+- 精美的表盘设计
+
+使用方法：
+- 直接运行即可看到时钟
+- 关闭窗口退出
+
+注意事项：
+- 需要 turtle 库（Python 自带）
+- 需要图形界面支持
+
+作者：小宝科技帝国
+日期：2024
+"""
+
 import turtle
 from time import localtime, strftime
 

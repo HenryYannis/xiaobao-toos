@@ -1,9 +1,32 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+小宝工具箱 - Edge 下载管理器 (Edge Download Manager)
+
+功能：
+- 禁用或启用 Edge 浏览器的下载功能
+- 通过修改注册表实现
+- 适合公共电脑或教学环境
+
+使用方法：
+- 需要以管理员权限运行
+- 点击按钮切换下载功能状态
+
+注意事项：
+- 仅支持 Windows 系统
+- 需要管理员权限
+- 修改后需要重启 Edge 浏览器生效
+
+作者：小宝科技帝国
+日期：2024
+"""
+
 import tkinter as tk
 from tkinter import messagebox
 import winreg
 import sys
 import os
-import subprocess # 导入 subprocess 模块来执行命令
+import subprocess
 
 # 定义注册表路径和键名
 REG_PATH = r"SOFTWARE\Policies\Microsoft\Edge"

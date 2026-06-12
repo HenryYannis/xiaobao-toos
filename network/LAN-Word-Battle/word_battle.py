@@ -1,16 +1,39 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+小宝工具箱 - 局域网单词对战 (LAN Word Battle)
+
+功能：
+- 局域网内多人英语单词对战游戏
+- 支持服务端和客户端模式
+- 趣味学习英语单词
+
+使用方法：
+- 服务端：直接运行，自动获取本机IP
+- 客户端：运行后输入服务端IP地址连接
+
+注意事项：
+- 需要 tkinter 库（Python 自带）
+- 需要 words.txt 单词文件（已内置默认单词）
+- 服务端和客户端需要在同一局域网内
+
+作者：小宝科技帝国
+日期：2024
+"""
+
 import socket
 import threading
 import random
 import time
 import pathlib
 import sys
-import os 
+import os
 import tkinter as tk
 from tkinter import messagebox
 
 # --- Configuration ---
 PORT = 12888
-HOST_IP = '输入电脑名或IP'  
+HOST_IP = socket.gethostbyname(socket.gethostname())  # 自动获取本机IP
 GAME_DURATION_SECONDS = 180
 
 def resource_path(relative_path):

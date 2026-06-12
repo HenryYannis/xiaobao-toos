@@ -1,3 +1,27 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+小宝工具箱 - 手势识别 (Gesture Recognizer)
+
+功能：
+- 基于 OpenCV 和 MediaPipe 的手势识别
+- 识别手部关键点
+- 触发特定 Windows 系统快捷操作
+
+使用方法：
+- 直接运行即可启动摄像头
+- 使用手势控制屏幕上的角色
+- 按 Escape 键退出
+
+注意事项：
+- 需要安装 opencv-python：pip install opencv-python
+- 需要安装 mediapipe：pip install mediapipe
+- 需要摄像头设备
+
+作者：小宝科技帝国
+日期：2024
+"""
+
 import cv2
 import mediapipe as mp
 import numpy as np

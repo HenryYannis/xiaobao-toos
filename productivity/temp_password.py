@@ -1,3 +1,25 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+小宝工具箱 - 临时密码生成器 (Temporary Password Generator)
+
+功能：
+- 生成高强度随机临时密码
+- 支持自定义密码长度
+- 支持包含大小写字母、数字和符号
+
+使用方法：
+- 直接运行即可生成密码
+- 复制生成的密码使用
+
+注意事项：
+- 需要 tkinter 库（Python 自带）
+- 生成的密码仅用于临时用途
+
+作者：小宝科技帝国
+日期：2024
+"""
+
 import tkinter as tk
 from tkinter import messagebox, simpledialog
 import hashlib

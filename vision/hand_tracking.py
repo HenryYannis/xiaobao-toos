@@ -1,6 +1,28 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+小宝工具箱 - 手部跟踪 (Hand Tracking)
+
+功能：
+- 实时检测摄像头画面中的手部
+- 识别手部 21 个关键点
+- 实时输出三维坐标
+
+使用方法：
+- 直接运行即可启动摄像头
+- 按 Escape 键退出
+
+注意事项：
+- 需要安装 opencv-python：pip install opencv-python
+- 需要安装 mediapipe：pip install mediapipe
+- 需要摄像头设备
+
+作者：小宝科技帝国
+日期：2024
+"""
+
 import cv2
 import mediapipe as mp
-import numpy as np
 
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils

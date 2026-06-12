@@ -1,7 +1,30 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+小宝工具箱 - 移除桌面了解此图片 (Hide Desktop Info)
+
+功能：
+- 移除 Windows 锁屏界面的"了解此图片"按钮
+- 通过修改注册表实现
+- 让锁屏界面更加简洁
+
+使用方法：
+- 直接运行即可移除
+- 需要重启资源管理器生效
+
+注意事项：
+- 仅支持 Windows 系统
+- 需要管理员权限
+- 修改后需要重启资源管理器生效
+
+作者：小宝科技帝国
+日期：2024
+"""
+
 import sys
 import subprocess
 from winreg import (
-    CreateKey, SetValueEx, REG_DWORD, 
+    CreateKey, SetValueEx, REG_DWORD,
     HKEY_CURRENT_USER, CloseKey
 )
 import ctypes

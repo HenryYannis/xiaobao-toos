@@ -1,3 +1,26 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+小宝工具箱 - 音频合并工具 (Audio Merger)
+
+功能：
+- 批量合并多个音频文件
+- 支持 MP3、WAV、OGG 等格式
+- 图形界面操作
+
+使用方法：
+- 选择包含音频文件的目录
+- 点击合并按钮
+
+注意事项：
+- 需要安装 pydub：pip install pydub
+- 需要 ffmpeg 支持（可将 ffmpeg.exe 放在脚本同目录）
+- Windows 系统下会自动隐藏 subprocess 窗口
+
+作者：小宝科技帝国
+日期：2024
+"""
+
 import os
 import warnings
 import tkinter as tk
@@ -19,6 +42,7 @@ if sys.platform.startswith("win"):
         return _original_popen(*args, **kwargs)
 
     subprocess.Popen = _hidden_popen
+
 # 抑制 pydub 启动警告
 warnings.filterwarnings("ignore", category=RuntimeWarning, module="pydub.utils")
 
@@ -29,11 +53,7 @@ ffprobe_exe = os.path.join(script_dir, "ffprobe.exe")
 
 os.environ["PATH"] += os.pathsep + script_dir
 AudioSegment.converter = ffmpeg_exe
-AudioSegment.ffprobe   = ffprobe_exe
-
-# 启动检查
-print(f"ffmpeg: {ffmpeg_exe} → {'存在' if os.path.isfile(ffmpeg_exe) else '不存在'}")
-print(f"ffprobe: {ffprobe_exe} → {'存在' if os.path.isfile(ffprobe_exe) else '不存在'}")
+AudioSegment.ffprobe = ffprobe_exe
 
 def validate_path(p):
     p = (p or "").strip()

@@ -1,3 +1,26 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+小宝工具箱 - 图片转图标 (Image to ICO Converter)
+
+功能：
+- 将 PNG、JPG 等图片格式转换为 Windows 图标格式
+- 支持多种图标尺寸
+- 支持批量转换
+
+使用方法：
+- 选择要转换的图片文件
+- 选择输出尺寸
+- 点击转换按钮
+
+注意事项：
+- 需要安装 Pillow：pip install Pillow
+- 输出为 .ico 格式文件
+
+作者：小宝科技帝国
+日期：2024
+"""
+
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 from PIL import Image

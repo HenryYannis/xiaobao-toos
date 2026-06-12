@@ -1,10 +1,33 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+小宝工具箱 - 壁纸修改限制工具 (Wallpaper Policy Tool)
+
+功能：
+- 禁止或允许用户修改 Windows 桌面壁纸
+- 通过修改注册表策略实现
+- 适合公共电脑或展示环境
+
+使用方法：
+- 需要以管理员权限运行
+- 点击按钮切换壁纸修改权限
+
+注意事项：
+- 仅支持 Windows 系统
+- 需要管理员权限
+- 修改后需要重启资源管理器生效
+
+作者：小宝科技帝国
+日期：2024
+"""
+
 import sys
 import subprocess
 import ctypes
 import tkinter as tk
 from tkinter import messagebox
 from winreg import (
-    CreateKey, SetValueEx, DeleteValue, REG_DWORD, 
+    CreateKey, SetValueEx, DeleteValue, REG_DWORD,
     HKEY_CURRENT_USER, CloseKey, OpenKey, KEY_ALL_ACCESS
 )
 

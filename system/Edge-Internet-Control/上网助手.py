@@ -1,3 +1,27 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+小宝工具箱 - 上网助手 (Internet Assistant)
+
+功能：
+- 定时控制 Edge 浏览器联网状态
+- 支持断网和联网时间设置
+- 帮助用户专注工作或学习
+
+使用方法：
+- 需要以管理员权限运行
+- 设置断网和联网时间
+- 点击开始按钮
+
+注意事项：
+- 仅支持 Windows 系统
+- 需要管理员权限
+- 需要安装 pywin32：pip install pywin32
+
+作者：小宝科技帝国
+日期：2024
+"""
+
 import os
 import time
 import tkinter as tk

@@ -26,7 +26,11 @@ class CustomHTTPRequestHandler(SimpleHTTPRequestHandler):
         """处理局域网内其他设备上传文件的 POST 请求"""
         try:
             # 解析 multipart/form-data 类型的 POST 请求
-            boundary = self.headers.get_boundary().encode()
+            boundary = self.headers.get_boundary()
+            if not boundary:
+                self.send_error(400, "Missing boundary in Content-Type")
+                return
+            boundary = boundary.encode()
             remainbytes = int(self.headers['content-length'])
             line = self.rfile.readline()
             remainbytes -= len(line)

@@ -1,3 +1,24 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+小宝工具箱 - 井字棋游戏 (Tic Tac Toe)
+
+功能：
+- 经典的井字棋游戏
+- 支持双人对战
+- 基于 tkinter 的图形界面
+
+使用方法：
+- 直接运行即可开始游戏
+- 点击格子下棋
+
+注意事项：
+- 需要 tkinter 库（Python 自带）
+
+作者：小宝科技帝国
+日期：2024
+"""
+
 import tkinter as tk
 from tkinter import messagebox
 import random
