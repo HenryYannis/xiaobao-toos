@@ -27,7 +27,7 @@
 ### 报告 Bug
 
 如果你在运行现有小工具时遇到了问题：
-1. 请先在 [Issues](https://github.com/HenryYannis/xiaobao-toos/issues) 中搜索是否已有相似的报告。
+1. 请先在 [Issues](https://github.com/HenryYannis/xiaobao-tools/issues) 中搜索是否已有相似的报告。
 2. 如果没有，请使用我们的 **Bug Report 模板** 创建一个新的 Issue。
 3. 请尽可能提供：
    - 运行环境（OS版本、Python版本）。
@@ -37,7 +37,7 @@
 ### 建议新工具/新功能
 
 我们非常欢迎各种能够提高效率、极具创意的小工具：
-1. 在 [Issues](https://github.com/HenryYannis/xiaobao-toos/issues) 提交一个 Feature Request。
+1. 在 [Issues](https://github.com/HenryYannis/xiaobao-tools/issues) 提交一个 Feature Request。
 2. 说明该工具的解决场景、输入和预期输出。
 
 ### 提交代码 (Pull Request)

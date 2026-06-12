@@ -2,11 +2,11 @@
 
 🌐 **简体中文 | [English](./README_EN.md)**
 
-[![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/HenryYannis/xiaobao-toos)
+[![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/HenryYannis/xiaobao-tools)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python Version](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-blue.svg)](https://www.python.org/)
 [![Codex Enabled](https://img.shields.io/badge/OpenAI%20Codex-Enabled-green.svg)](https://openai.com/form/codex-for-oss/)
-[![Build Status](https://github.com/HenryYannis/xiaobao-toos/actions/workflows/lint.yml/badge.svg)](https://github.com/HenryYannis/xiaobao-toos/actions)
+[![Build Status](https://github.com/HenryYannis/xiaobao-tools/actions/workflows/lint.yml/badge.svg)](https://github.com/HenryYannis/xiaobao-tools/actions)
 
 **小宝工具箱 (xiaobao-tools)** 是一款面向独立开发者、系统管理员和日常办公人员的开源 Python 脚本与系统配置工具箱。项目旨在提供开箱即用、轻量化且高效率的自动化方案，包含系统环境优化、局域网交互游戏、手势识别、多媒体合并以及日常趣味工具等。
 
@@ -104,8 +104,8 @@
 ### 1. 环境准备
 推荐使用 Python 3.8 或以上版本。克隆仓库到本地：
 ```bash
-git clone https://github.com/HenryYannis/xiaobao-toos.git
-cd xiaobao-toos
+git clone https://github.com/HenryYannis/xiaobao-tools.git
+cd xiaobao-tools
 ```
 
 ### 2. 安装依赖

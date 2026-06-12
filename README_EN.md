@@ -2,11 +2,11 @@
 
 🌐 **[简体中文](./README.md) | English**
 
-[![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/HenryYannis/xiaobao-toos)
+[![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/HenryYannis/xiaobao-tools)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python Version](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-blue.svg)](https://www.python.org/)
 [![Codex Enabled](https://img.shields.io/badge/OpenAI%20Codex-Enabled-green.svg)](https://openai.com/form/codex-for-oss/)
-[![Build Status](https://github.com/HenryYannis/xiaobao-toos/actions/workflows/lint.yml/badge.svg)](https://github.com/HenryYannis/xiaobao-toos/actions)
+[![Build Status](https://github.com/HenryYannis/xiaobao-tools/actions/workflows/lint.yml/badge.svg)](https://github.com/HenryYannis/xiaobao-tools/actions)
 
 **Xiaobao Tools (xiaobao-tools)** is a highly curated, modular open-source toolkit comprising 20+ Python scripts and Windows configuration tools designed for independent developers, system administrators, and office professionals. The project aims to provide out-of-the-box, lightweight, and highly efficient automation solutions, covering registry optimizations, local network interactive utilities, computer vision gesture tracking, multimedia processing, and interactive edutainment.
 
@@ -104,8 +104,8 @@ As a project maintained by a single core developer, utilizing AI to maximize dai
 ### 1. Clone the Repository
 Ensure you have Python 3.8+ installed. Clone the repository:
 ```bash
-git clone https://github.com/HenryYannis/xiaobao-toos.git
-cd xiaobao-toos
+git clone https://github.com/HenryYannis/xiaobao-tools.git
+cd xiaobao-tools
 ```
 
 ### 2. Install Dependencies
