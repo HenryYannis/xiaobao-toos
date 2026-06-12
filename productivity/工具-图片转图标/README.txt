@@ -1,1 +1,0 @@
-pyinstaller --onefile  图片转图标.pyw

@@ -1,1 +1,0 @@
-pyinstaller --onefile --windowed --uac-admin wallpaper_policy_tool.py

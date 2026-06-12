@@ -1,3 +1,6 @@
+# 版本信息
+
+```
 # UTF-8
 VSVersionInfo(
     ffi=FixedFileInfo(
@@ -28,3 +31,4 @@ VSVersionInfo(
         VarFileInfo([VarStruct(u'Translation', [0, 1200])])
     ]
 )
+```

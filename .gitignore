@@ -68,3 +68,14 @@ venv.bak/
 .project
 .pydevproject
 .settings/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Build artifacts
+*.exe
+*.bat

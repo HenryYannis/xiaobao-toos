@@ -26,12 +26,12 @@
 
 | 🎯 目标用户群体 | 💡 核心解决需求 (痛点) | 🛠️ 推荐小工具 |
 | :--- | :--- | :--- |
-| 🧑‍🏫 **教育工作者与机房管理员** | 想要在少儿编程课或公共机房中，限制用户随意下载、乱改壁纸，或移除 Windows 锁屏悬浮小广告；跨端极速分发课件。 | [Edge-禁止下载](./system/Edge-禁止下载), [禁止-修改壁纸](./system/禁止-修改壁纸), [移除-了解此图片](./system/移除-了解此图片), [工具-局域网极速文件共享器](./network/工具-局域网极速文件共享器.py) |
-| 🎬 **新媒体创作者与设计师** | 在本地快速进行多段语音拼接录音，或将图片转为高保真 ICO 图标；等时间步长批量无损截取视频画面帧。 | [工具-图片转图标](./productivity/工具-图片转图标), [工具-音频合并](./productivity/工具-音频合并), [工具-批量视频截图提取器](./vision/工具-批量视频截图提取器.py) |
-| 🧑‍🎓 **外语学习者与青少年** | 希望和身边的同学在局域网内，通过趣味单词联机对战，在互动娱乐中加深英语单词记忆。 | [局域网-单词对战](./network/局域网-单词对战) |
-| 🧑‍💻 **独立开发者与 AI 狂热者** | 想要在本地免代理搭建局域网 AI 共享网关；或者一键提取项目所有脚本大纲，供大模型精准进行 Code Review。 | [局域网-Ai对话](./network/局域网-Ai对话), [工具-代码结构大纲生成器.py](./productivity/工具-代码结构大纲生成器.py) |
-| 💼 **普通办公族与效率达人** | 频繁需要随机生成高强度账户临时密码，或者是桌面挂置多功能时钟、精确倒计时；自动记录并一键极速翻译剪贴板文本。 | [临时密码.py](./productivity/临时密码.py), [全时钟.py](./games_and_fun/全时钟.py), [数字倒计时.py](./productivity/数字倒计时.py), [工具-简易剪贴板历史翻译器](./productivity/工具-简易剪贴板历史翻译器.py) |
-| 🤖 **极客爱好者与算法探索者** | 想要探秘人手 21 个骨骼点识别底座，或者体验酷炫的绿雨代码雨屏保、纯画笔绘制 3D 玫瑰艺术动画。 | [手势识别.py](./vision/手势识别.py), [手部跟踪.py](./vision/手部跟踪.py), [黑客特效.py](./games_and_fun/黑客特效.py) |
+| 🧑‍🏫 **教育工作者与机房管理员** | 想要在少儿编程课或公共机房中，限制用户随意下载、乱改壁纸，或移除 Windows 锁屏悬浮小广告；跨端极速分发课件。 | [Edge-禁止下载](./system/Edge-Disable-Downloads), [禁止-修改壁纸](./system/Disable-Wallpaper-Change), [移除-了解此图片](./system/Remove-Spotlight-Info), [工具-局域网极速文件共享器](./network/lan_file_share.py) |
+| 🎬 **新媒体创作者与设计师** | 在本地快速进行多段语音拼接录音，或将图片转为高保真 ICO 图标；等时间步长批量无损截取视频画面帧。 | [工具-图片转图标](./productivity/Image-to-ICO), [工具-音频合并](./productivity/Audio-Merger), [工具-批量视频截图提取器](./vision/video_frame_extractor.py) |
+| 🧑‍🎓 **外语学习者与青少年** | 希望和身边的同学在局域网内，通过趣味单词联机对战，在互动娱乐中加深英语单词记忆。 | [局域网-单词对战](./network/LAN-Word-Battle) |
+| 🧑‍💻 **独立开发者与 AI 狂热者** | 想要在本地免代理搭建局域网 AI 共享网关；或者一键提取项目所有脚本大纲，供大模型精准进行 Code Review。 | [局域网-Ai对话](./network/LAN-AI-Chat), [工具-代码结构大纲生成器.py](./productivity/code_outline_generator.py) |
+| 💼 **普通办公族与效率达人** | 频繁需要随机生成高强度账户临时密码，或者是桌面挂置多功能时钟、精确倒计时；自动记录并一键极速翻译剪贴板文本。 | [临时密码.py](./productivity/temp_password.py), [全时钟.py](./games_and_fun/dashboard_clock.py), [数字倒计时.py](./productivity/countdown.py), [工具-简易剪贴板历史翻译器](./productivity/clipboard_translator.py) |
+| 🤖 **极客爱好者与算法探索者** | 想要探秘人手 21 个骨骼点识别底座，或者体验酷炫的绿雨代码雨屏保、纯画笔绘制 3D 玫瑰艺术动画。 | [手势识别.py](./vision/gesture_recognizer.py), [手部跟踪.py](./vision/hand_tracking.py), [黑客特效.py](./games_and_fun/hacker_matrix.py) |
 
 ---
 
@@ -42,45 +42,45 @@
 ### 1. 🛜 局域网与网络联机 (Network & LAN Utilities)
 | 工具名称/文件夹 | 英文标识 | 核心功能简介 |
 | :--- | :--- | :--- |
-| [局域网-Ai对话](./network/局域网-Ai对话) | `LAN-AI-Chat` | 本地局域网内提供多端 AI 对话的前后端交互工具，实现局域网设备免梯免配置共享 AI 能力。 |
-| [局域网-单词对战](./network/局域网-单词对战) | `LAN-Word-Battle` | 局域网内与好友进行英语单词记忆和对战的多人联机小游戏，兼顾趣味与学习。 |
-| [工具-局域网极速文件共享器](./network/工具-局域网极速文件共享器.py) | `lan_file_share` | 本地目录一键变身局域网文件共享中心与免流量极速跨端上传分发服务。 |
+| [局域网-Ai对话](./network/LAN-AI-Chat) | `LAN-AI-Chat` | 本地局域网内提供多端 AI 对话的前后端交互工具，实现局域网设备免梯免配置共享 AI 能力。 |
+| [局域网-单词对战](./network/LAN-Word-Battle) | `LAN-Word-Battle` | 局域网内与好友进行英语单词记忆和对战的多人联机小游戏，兼顾趣味与学习。 |
+| [工具-局域网极速文件共享器](./network/lan_file_share.py) | `lan_file_share` | 本地目录一键变身局域网文件共享中心与免流量极速跨端上传分发服务。 |
 
 ### 2. 💻 系统管理与浏览器控制 (System & Browser Optimization)
 | 工具名称/文件夹 | 英文标识 | 核心功能简介 |
 | :--- | :--- | :--- |
-| [Edge-禁止下载](./system/Edge-禁止下载) | `Edge-Disable-Downloads` | 通过注册表与组策略，安全快捷地禁用 Edge 浏览器下载功能，适合公共机器、机房或少儿教学环境。 |
-| [Edge-联网控制](./system/Edge-联网控制) | `Edge-Internet-Control` | 限制或解除 Edge 浏览器联网权限的实用底层脚本。 |
-| [禁止-修改壁纸](./system/禁止-修改壁纸) | `Disable-Wallpaper-Change` | 限制用户修改 Windows 桌面壁纸，防误触/统一企业展示或展台的桌面配置工具。 |
-| [移除-了解此图片](./system/移除-了解此图片) | `Remove-Spotlight-Info` | 一键移除 Windows 聚焦锁屏界面右上方繁琐的“了解此图片”浮窗，让锁屏界面重回极简干净。 |
+| [Edge-禁止下载](./system/Edge-Disable-Downloads) | `Edge-Disable-Downloads` | 通过注册表与组策略，安全快捷地禁用 Edge 浏览器下载功能，适合公共机器、机房或少儿教学环境。 |
+| [Edge-联网控制](./system/Edge-Internet-Control) | `Edge-Internet-Control` | 限制或解除 Edge 浏览器联网权限的实用底层脚本。 |
+| [禁止-修改壁纸](./system/Disable-Wallpaper-Change) | `Disable-Wallpaper-Change` | 限制用户修改 Windows 桌面壁纸，防误触/统一企业展示或展台的桌面配置工具。 |
+| [移除-了解此图片](./system/Remove-Spotlight-Info) | `Remove-Spotlight-Info` | 一键移除 Windows 聚焦锁屏界面右上方繁琐的”了解此图片”浮窗，让锁屏界面重回极简干净。 |
 
 ### 3. 🛠 办公自动化与实用程序 (Office Automation & Productivity)
 | 工具名称/脚本 | 英文标识 | 核心功能简介 |
 | :--- | :--- | :--- |
-| [工具-图片转图标](./productivity/工具-图片转图标) | `Image-to-ICO` | 本地快速将常用图片格式（PNG/JPG）一键转换为 Windows 支持的 `.ico` 图标，支持多分辨率合并。 |
-| [工具-音频合并](./productivity/工具-音频合并) | `Audio-Merger` | 快速扫描目录并拼接合并多段音频（如 MP3 拼接）的实用多媒体处理脚本。 |
-| [工具-代码结构大纲生成器.py](./productivity/工具-代码结构大纲生成器.py) | `code_outline_generator` | 一键扫描项目，提取其中所有的类、函数定义及文档注释(Docstring)，自动生成精美的项目大纲文档，方便开发者或 AI (Codex) 快速阅读代码架构。 |
-| [工具-简易剪贴板历史翻译器.py](./productivity/工具-简易剪贴板历史翻译器.py) | `clipboard_translator` | 自动捕获系统剪贴板历史，提供无缝的免 Key 极速中英互译并支持一键重新复制。 |
-| [临时密码.py](./productivity/临时密码.py) | `temp_password.py` | 快速生成包含大小写字母、数字和符号的高强度随机临时密码，保障日常账户安全。 |
-| [数字倒计时.py](./productivity/数字倒计时.py) | `countdown.py` | 精确到秒的轻量级数字倒计时及声音提醒程序。 |
-| [进度条.py](./productivity/进度条.py) | `progress_bar.py` | 提供给终端和命令行开发者使用的优雅、动感命令行进度条输出模块。 |
+| [工具-图片转图标](./productivity/Image-to-ICO) | `Image-to-ICO` | 本地快速将常用图片格式（PNG/JPG）一键转换为 Windows 支持的 `.ico` 图标，支持多分辨率合并。 |
+| [工具-音频合并](./productivity/Audio-Merger) | `Audio-Merger` | 快速扫描目录并拼接合并多段音频（如 MP3 拼接）的实用多媒体处理脚本。 |
+| [工具-代码结构大纲生成器.py](./productivity/code_outline_generator.py) | `code_outline_generator` | 一键扫描项目，提取其中所有的类、函数定义及文档注释(Docstring)，自动生成精美的项目大纲文档，方便开发者或 AI (Codex) 快速阅读代码架构。 |
+| [工具-简易剪贴板历史翻译器.py](./productivity/clipboard_translator.py) | `clipboard_translator` | 自动捕获系统剪贴板历史，提供无缝的免 Key 极速中英互译并支持一键重新复制。 |
+| [临时密码.py](./productivity/temp_password.py) | `temp_password.py` | 快速生成包含大小写字母、数字和符号的高强度随机临时密码，保障日常账户安全。 |
+| [数字倒计时.py](./productivity/countdown.py) | `countdown.py` | 精确到秒的轻量级数字倒计时及声音提醒程序。 |
+| [进度条.py](./productivity/progress_bar.py) | `progress_bar.py` | 提供给终端和命令行开发者使用的优雅、动感命令行进度条输出模块。 |
 
 ### 4. 👁 人机交互与视觉算法 (Interaction & Vision Algorithms)
 | 工具名称/脚本 | 英文标识 | 核心功能简介 |
 | :--- | :--- | :--- |
-| [手势识别.py](./vision/手势识别.py) | `gesture_recognizer.py` | 基于 OpenCV 和 MediaPipe 框架，识别复杂手势并触发特定 Windows 系统快捷操作的演示程序。 |
-| [手部跟踪.py](./vision/手部跟踪.py) | `hand_tracking.py` | 快速在摄像头视频流中定位手部 21 个核心关键点，并实时输出三维坐标的基础框架。 |
-| [工具-批量视频截图提取器.py](./vision/工具-批量视频截图提取器.py) | `video_frame_extractor` | 提供视频载入、滑块精准选帧截图，或配置时间步长全自动无损批量截图导出。 |
+| [手势识别.py](./vision/gesture_recognizer.py) | `gesture_recognizer.py` | 基于 OpenCV 和 MediaPipe 框架，识别复杂手势并触发特定 Windows 系统快捷操作的演示程序。 |
+| [手部跟踪.py](./vision/hand_tracking.py) | `hand_tracking.py` | 快速在摄像头视频流中定位手部 21 个核心关键点，并实时输出三维坐标的基础框架。 |
+| [工具-批量视频截图提取器.py](./vision/video_frame_extractor.py) | `video_frame_extractor` | 提供视频载入、滑块精准选帧截图，或配置时间步长全自动无损批量截图导出。 |
 
 ### 5. 🎮 趣味娱乐与科普教育 (Games & Interactive Edutainment)
 | 工具名称/脚本 | 英文标识 | 核心功能简介 |
 | :--- | :--- | :--- |
-| [井字棋.py](./games_and_fun/井字棋.py) | `tic_tac_toe.py` | 支持双人对战的经典 GUI（基于 Tkinter）井字棋交互游戏。 |
-| [时钟.py](./games_and_fun/时钟.py) | `clock.py` | 界面极简精致的桌面数字电子时钟，便于工作区挂置。 |
-| [全时钟.py](./games_and_fun/全时钟.py) | `dashboard_clock.py` | 交互功能丰富的仪表盘式全时钟，提供多时区、倒计时、闹钟与状态记录看板。 |
-| [黑客特效.py](./games_and_fun/黑客特效.py) | `hacker_matrix.py` | 基于 Pygame 的经典《黑客帝国》数字雨特效壁纸与屏幕保护运行脚本。 |
-| [玫瑰花程序.py](./games_and_fun/玫瑰花程序.py) | `turtle_rose.py` | 使用 Python Turtle 画笔绘制的三维立体玫瑰花动画程序，具有极高的几何拟真度。 |
-| [破译程序.py](./games_and_fun/破译程序.py) | `cipher_decrypter.py` | 演示字符置换加密与暴力破解过程的密码学教育科普工具，带你初识密码破译。 |
+| [井字棋.py](./games_and_fun/tic_tac_toe.py) | `tic_tac_toe.py` | 支持双人对战的经典 GUI（基于 Tkinter）井字棋交互游戏。 |
+| [时钟.py](./games_and_fun/clock.py) | `clock.py` | 界面极简精致的桌面数字电子时钟，便于工作区挂置。 |
+| [全时钟.py](./games_and_fun/dashboard_clock.py) | `dashboard_clock.py` | 交互功能丰富的仪表盘式全时钟，提供多时区、倒计时、闹钟与状态记录看板。 |
+| [黑客特效.py](./games_and_fun/hacker_matrix.py) | `hacker_matrix.py` | 基于 Pygame 的经典《黑客帝国》数字雨特效壁纸与屏幕保护运行脚本。 |
+| [玫瑰花程序.py](./games_and_fun/turtle_rose.py) | `turtle_rose.py` | 使用 Python Turtle 画笔绘制的三维立体玫瑰花动画程序，具有极高的几何拟真度。 |
+| [破译程序.py](./games_and_fun/cipher_decrypter.py) | `cipher_decrypter.py` | 演示字符置换加密与暴力破解过程的密码学教育科普工具，带你初识密码破译。 |
 
 ---
 
@@ -109,7 +109,7 @@ cd xiaobao-toos
 ```
 
 ### 2. 安装依赖
-大部分独立小脚本无外部依赖。如果运行涉及到视觉算法或游戏特效（如 `手势识别.py`、`黑客特效.py` 等），请一键安装相关依赖：
+大部分独立小脚本无外部依赖。如果运行涉及到视觉算法或游戏特效（如 `gesture_recognizer.py`、`hacker_matrix.py` 等），请一键安装相关依赖：
 ```bash
 pip install -r requirements.txt
 ```
@@ -118,7 +118,7 @@ pip install -r requirements.txt
 ### 3. 运行示例
 直接在终端或双击运行你感兴趣的工具：
 ```bash
-python 临时密码.py
+python temp_password.py
 ```
 
 ---
