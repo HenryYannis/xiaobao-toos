@@ -45,6 +45,8 @@ To help you quickly locate what you need, our tools are structured into five maj
 | [局域网-Ai对话](./network/LAN-AI-Chat) | `LAN-AI-Chat` | A local LAN server-client utility facilitating multi-device AI chats without complex configurations. |
 | [局域网-单词对战](./network/LAN-Word-Battle) | `LAN-Word-Battle` | An engaging LAN multiplayer English vocabulary battle game combining learning and fun. |
 | [工具-局域网极速文件共享器](./network/lan_file_share.py) | `lan_file_share` | Exposes a beautiful web page for instant LAN file distribution and mobile-to-PC uploads without internet. |
+| [端口扫描工具.py](./network/port_scanner.py) | `port_scanner` | Scan open ports on a target IP address with multi-threading and common service detection. |
+| [网速测试工具.py](./network/speed_test.py) | `speed_test` | Test network download/upload speed, latency, and packet loss rate. |
 
 ### 2. 💻 System & Browser Optimization
 | Tool Name / Folder | English Tag | Description |
@@ -53,6 +55,8 @@ To help you quickly locate what you need, our tools are structured into five maj
 | [Edge-联网控制](./system/Edge-Internet-Control) | `Edge-Internet-Control` | A powerful lower-level script to block or permit MS Edge internet permissions dynamically. |
 | [禁止-修改壁纸](./system/Disable-Wallpaper-Change) | `Disable-Wallpaper-Change` | Restricts wallpaper modifications to lock desktop wallpaper, ideal for kiosks or public displays. |
 | [移除-了解此图片](./system/Remove-Spotlight-Info) | `Remove-Spotlight-Info` | Instantly removes the distracting "Learn about this picture" spotlight pop-up from Windows lock screens. |
+| [系统垃圾清理工具.py](./system/system_cleanup.py) | `system_cleanup` | One-click cleanup tool for temporary files, recycle bin, browser cache, system logs, and more. |
+| [开机启动项管理工具.py](./system/startup_manager.py) | `startup_manager` | View, add, and remove Windows startup programs for system management. |
 
 ### 3. 🛠 Office Automation & Productivity
 | Tool Name / Script | English Tag | Description |
@@ -64,6 +68,8 @@ To help you quickly locate what you need, our tools are structured into five maj
 | [临时密码.py](./productivity/temp_password.py) | `temp_password.py` | Generates highly secure, random passwords with customizable lengths and character sets. |
 | [数字倒计时.py](./productivity/countdown.py) | `countdown.py` | A lightweight countdown timer with sound notifications precise to the second. |
 | [进度条.py](./productivity/progress_bar.py) | `progress_bar.py` | An elegant, animated CLI progress bar module designed for command-line developers. |
+| [批量文件重命名工具.py](./productivity/batch_file_renamer.py) | `batch_file_renamer` | Batch file renamer supporting multiple modes: prefix/suffix, replace, sequence, date, and regex. |
+| [Excel批量处理工具.py](./productivity/excel_batch_processor.py) | `excel_batch_processor` | Batch read, merge, filter, and analyze multiple Excel files for office productivity. |
 
 ### 4. 👁 Interaction & Vision Algorithms
 | Tool Name / Script | English Tag | Description |
@@ -71,6 +77,8 @@ To help you quickly locate what you need, our tools are structured into five maj
 | [手势识别.py](./vision/gesture_recognizer.py) | `gesture_recognizer.py` | Employs OpenCV & MediaPipe to recognize complex gestures and map them into Windows keyboard shortcuts. |
 | [手部跟踪.py](./vision/hand_tracking.py) | `hand_tracking.py` | Fast framework to capture camera video streams, locate 21 hand skeletal landmarks, and stream 3D coordinates. |
 | [工具-批量视频截图提取器.py](./vision/video_frame_extractor.py) | `video_frame_extractor` | Grabs frames from local videos sequentially by configurable time intervals or manually via slider. |
+| [图片批量压缩工具.py](./vision/image_compressor.py) | `image_compressor` | Batch compress images with customizable quality, resize options, and multiple output formats. |
+| [屏幕截图工具.py](./vision/screen_capture.py) | `screen_capture` | Screen capture tool supporting full screen, region, window, and delayed screenshots. |
 
 ### 5. 🎮 Games & Interactive Edutainment
 | Tool Name / Script | English Tag | Description |
