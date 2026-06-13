@@ -303,6 +303,17 @@ def 阻断逻辑():
         pass
 
 
+def 居中显示(窗口):
+    窗口.update_idletasks()
+    宽 = 窗口.winfo_width()
+    高 = 窗口.winfo_height()
+    屏幕宽 = 窗口.winfo_screenwidth()
+    屏幕高 = 窗口.winfo_screenheight()
+    x = (屏幕宽 - 宽) // 2
+    y = (屏幕高 - 高) // 2
+    窗口.geometry(f"{宽}x{高}+{x}+{y}")
+
+
 def 主入口():
     # 操作系统检查
     if sys.platform != 'win32':
