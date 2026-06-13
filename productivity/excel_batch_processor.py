@@ -21,6 +21,9 @@ from pathlib import Path
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 import threading
+import logging
+
+logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
 
 
 class ExcelBatchProcessor:
@@ -221,7 +224,7 @@ class ExcelBatchProcessor:
             try:
                 df = pd.read_excel(file)
                 self.dataframes.append(df)
-            except Exception as e:
+            except (OSError, ValueError) as e:
                 messagebox.showerror("错误", f"加载文件失败: {e}")
                 return False
 
@@ -283,7 +286,7 @@ class ExcelBatchProcessor:
             self.display_result()
             self.status_var.set("处理完成")
 
-        except Exception as e:
+        except (ValueError, KeyError) as e:
             messagebox.showerror("错误", f"处理失败: {e}")
 
     def merge_dataframes(self):
@@ -354,7 +357,7 @@ class ExcelBatchProcessor:
                 return merged[merged[col] <= float(val)]
             elif op == "contains":
                 return merged[merged[col].astype(str).str.contains(val, na=False)]
-        except Exception as e:
+        except (ValueError, KeyError) as e:
             messagebox.showerror("错误", f"筛选失败: {e}")
             return None
 
@@ -429,16 +432,11 @@ class ExcelBatchProcessor:
             self.status_var.set(f"数据已导出到: {file_path}")
             messagebox.showinfo("成功", f"数据已导出到:\n{file_path}")
 
-        except Exception as e:
+        except (OSError, ValueError) as e:
             messagebox.showerror("错误", f"导出失败: {e}")
 
 
-def main():
-    """主函数"""
+if __name__ == "__main__":
     root = tk.Tk()
     app = ExcelBatchProcessor(root)
     root.mainloop()
-
-
-if __name__ == "__main__":
-    main()

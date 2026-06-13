@@ -63,6 +63,24 @@ class OutlineParser(ast.NodeVisitor):
         })
         self.generic_visit(node)
 
+    def visit_AsyncFunctionDef(self, node):
+        """处理 async def 定义的异步函数/方法"""
+        docstring = ast.get_docstring(node) or "无异步函数说明文档"
+        brief = docstring.strip().split('\n')[0]
+        
+        # 异步函数判断类型
+        func_type = "async_method" if self.current_class else "async_function"
+        parent = self.current_class if self.current_class else None
+        
+        self.outline.append({
+            "type": func_type,
+            "name": node.name,
+            "parent": parent,
+            "brief": brief,
+            "line": node.lineno
+        })
+        self.generic_visit(node)
+
 def generate_outline(target_dir, output_file):
     """扫描指定目录下的所有 Python 文件并生成大纲"""
     target_path = Path(target_dir).resolve()
@@ -122,6 +140,10 @@ def generate_outline(target_dir, output_file):
                     md_content.append(f"| ⚙️ **函数 (Func)** | `{item['name']}` | L{item['line']} | {item['brief']} |")
                 elif item["type"] == "method":
                     md_content.append(f"| 🔹 *方法 (Method)* | `{item['parent']}.{item['name']}` | L{item['line']} | {item['brief']} |")
+                elif item["type"] == "async_function":
+                    md_content.append(f"| ⚡ **异步函数 (Async)** | `{item['name']}` | L{item['line']} | {item['brief']} |")
+                elif item["type"] == "async_method":
+                    md_content.append(f"| ⚡ *异步方法 (Async)* | `{item['parent']}.{item['name']}` | L{item['line']} | {item['brief']} |")
             
             md_content.append("\n---\n")
             

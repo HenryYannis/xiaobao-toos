@@ -22,7 +22,8 @@
 """
 
 import tkinter as tk
-from time import strftime
+from time import strftime, localtime
+
 
 class FullscreenClock:
     def __init__(self):
@@ -30,40 +31,75 @@ class FullscreenClock:
         self.root.attributes('-fullscreen', True)
         self.root.configure(bg='black')
         self.after_id = None
-        
-        # 创建时间标签（添加颜色安全校验）
+
+        # 尝试使用 ds-digital 字体，不存在则回退
+        try:
+            test_font = ('ds-digital', 200)
+            self.root.option_add('*Font', test_font)
+        except Exception:
+            pass
+
+        # 创建时间标签
         self.clock_label = tk.Label(
             self.root,
-            font=('ds-digital', 200),
+            font=('ds-digital', 200) if self._font_available('ds-digital') else ('Courier', 150),
             bg='black',
-            fg='white'  # 白色文字，确保在黑色背景上清晰可见
+            fg='white'
         )
         self.clock_label.pack(anchor='center', pady=200)
-        
+
+        # 创建日期标签
+        self.date_label = tk.Label(
+            self.root,
+            font=('Arial', 24),
+            bg='black',
+            fg='#57606a'
+        )
+        self.date_label.pack(anchor='center', pady=0)
+
+        # 绑定退出快捷键
         self.root.bind('<Escape>', self.safe_exit)
+        self.root.bind('q', self.safe_exit)
+
         self.update_time()
-        
+
+    @staticmethod
+    def _font_available(font_name):
+        """检查字体是否可用"""
+        try:
+            import tkinter.font as tkfont
+            available = tkfont.families()
+            return font_name in available
+        except Exception:
+            return False
+
     def update_time(self):
         current_time = strftime('%H:%M:%S')
         self.clock_label.config(text=current_time)
-        
+
+        # 更新日期
+        current_date = strftime('%Y年%m月%d日 %A')
+        self.date_label.config(text=current_date)
+
         h, m, s = map(int, current_time.split(':'))
-        
+
         # 颜色状态机逻辑
         new_color = 'white'  # 默认颜色
         if m == 59 and s >= 57:
             new_color = 'red'
-            
+
         # 仅在颜色变化时更新配置（优化性能）
         if self.clock_label.cget('foreground') != new_color:
             self.clock_label.config(fg=new_color)
-        
-        self.after_id = self.root.after(1000, self.update_time)
-        
+
+        # 500ms 刷新一次，避免秒数跳变
+        self.after_id = self.root.after(500, self.update_time)
+
     def safe_exit(self, event=None):
         if self.after_id:
             self.root.after_cancel(self.after_id)
         self.root.destroy()
+
 
 if __name__ == "__main__":
     app = FullscreenClock()

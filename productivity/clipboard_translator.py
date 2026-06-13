@@ -12,95 +12,134 @@ import json
 import threading
 import tkinter as tk
 from tkinter import messagebox
+import unicodedata
+import logging
+
+logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
+
 
 class ClipboardTranslatorApp:
     def __init__(self, root):
         self.root = root
         self.root.title("剪贴板历史翻译器")
-        self.root.geometry("450x450")
         self.root.resizable(False, False)
-        
+
         self.history = []
         self.last_clipboard_text = ""
         self.is_monitoring = True
-        
+
         self.setup_ui()
         self.monitor_clipboard()
+
+        # 窗口居中
+        self.root.update_idletasks()
+        w, h = 450, 450
+        x = (root.winfo_screenwidth() - w) // 2
+        y = (root.winfo_screenheight() - h) // 2
+        root.geometry(f"{w}x{h}+{x}+{y}")
 
     def setup_ui(self):
         # 头部横幅
         header = tk.Label(self.root, text="📋 剪贴板历史与极速翻译", font=("Helvetica", 14, "bold"), fg="#0969da")
         header.pack(pady=10)
-        
+
         # 历史记录列表框
         list_frame = tk.LabelFrame(self.root, text=" 复制历史记录 (双击条目重新写入剪贴板) ", font=("Helvetica", 9, "bold"), padx=5, pady=5)
         list_frame.pack(padx=15, fill="both", expand=True)
-        
+
         scrollbar = tk.Scrollbar(list_frame)
         scrollbar.pack(side="right", fill="y")
-        
+
         self.history_listbox = tk.Listbox(list_frame, yscrollcommand=scrollbar.set, font=("Helvetica", 10), height=8, selectmode="single")
         self.history_listbox.pack(side="left", fill="both", expand=True)
         scrollbar.config(command=self.history_listbox.yview)
-        
+
         # 绑定双击事件，一键复制历史
         self.history_listbox.bind("<Double-Button-1>", self.copy_selected_to_clipboard)
-        
+
         # 翻译预览区
         trans_frame = tk.LabelFrame(self.root, text=" 智能中英互译结果 ", font=("Helvetica", 9, "bold"), padx=5, pady=5)
         trans_frame.pack(padx=15, fill="x", pady=10)
-        
+
         self.trans_text = tk.Text(trans_frame, height=4, font=("Helvetica", 10), wrap="word")
         self.trans_text.pack(fill="x", expand=True)
-        
+
         # 按钮控制区
         btn_frame = tk.Frame(self.root)
         btn_frame.pack(pady=10)
-        
+
         translate_btn = tk.Button(btn_frame, text="⚡ 一键翻译选定项", font=("Helvetica", 10, "bold"), bg="#0969da", fg="white",
                                   relief="flat", activebackground="#0c54b6", command=self.translate_selected)
         translate_btn.grid(row=0, column=0, padx=10, ipady=3, ipadx=5)
-        
+
         copy_trans_btn = tk.Button(btn_frame, text="✍ 复制翻译结果", font=("Helvetica", 10, "bold"), bg="#2da44e", fg="white",
                                    relief="flat", activebackground="#2c974b", command=self.copy_translation)
         copy_trans_btn.grid(row=0, column=1, padx=10, ipady=3, ipadx=5)
-        
+
         clear_btn = tk.Button(btn_frame, text="🗑 清空历史", font=("Helvetica", 10), bg="#f6f8fa", relief="groove",
                               command=self.clear_history)
         clear_btn.grid(row=0, column=2, padx=10, ipady=2, ipadx=5)
+
+    def detect_language(self, text):
+        """
+        改进的语言检测：统计 CJK 字符占比来判断语言方向。
+        比"仅检查前5个字符"更鲁棒，能处理混合文本。
+        """
+        if not text.strip():
+            return "en"
+
+        cjk_count = 0
+        total_count = 0
+
+        for char in text:
+            # 跳过空格、标点、数字等
+            if char.isspace() or char in '.,;:!?\'"()[]{}<>/@#$%^&*-_+=\\|~`，。；：！？\'""（）【】{}、':
+                continue
+
+            total_count += 1
+
+            # 检测 CJK 统一汉字（中日韩）
+            cp = ord(char)
+            if (0x4E00 <= cp <= 0x9FFF or      # CJK 统一汉字
+                0x3400 <= cp <= 0x4DBF or      # CJK 扩展A
+                0x20000 <= cp <= 0x2A6DF or    # CJK 扩展B
+                0xF900 <= cp <= 0xFAFF or      # CJK 兼容汉字
+                0x2F800 <= cp <= 0x2FA1F or    # CJK 兼容汉字补充
+                0x3000 <= cp <= 0x303F or      # CJK 标点符号
+                0xFF00 <= cp <= 0xFFEF):       # 全角字符
+                cjk_count += 1
+
+        # 如果 CJK 字符占非空白字符的 30% 以上，判定为中文
+        if total_count > 0 and cjk_count / total_count > 0.3:
+            return "zh"
+        return "en"
 
     def monitor_clipboard(self):
         """主循环：每隔 500 毫秒轮询系统剪贴板，检测文本变更"""
         if self.is_monitoring:
             try:
-                # 获取系统剪贴板内容
                 clipboard_text = self.root.clipboard_get()
                 clipboard_text = clipboard_text.strip()
-                
-                # 触发剪贴板文本新增
+
                 if clipboard_text and clipboard_text != self.last_clipboard_text:
                     self.last_clipboard_text = clipboard_text
-                    
-                    # 避免重复
+
                     if clipboard_text not in self.history:
                         self.history.insert(0, clipboard_text)
-                        
-                        # 仅保留最近 25 条，保持清爽
+
                         if len(self.history) > 25:
                             self.history.pop()
-                            
+
                         self.update_listbox()
-            except Exception:
+            except tk.TclError:
                 # 剪贴板可能为空或非文本格式
                 pass
-            
-            # 定时轮询
+
             self.root.after(500, self.monitor_clipboard)
 
     def update_listbox(self):
         self.history_listbox.delete(0, tk.END)
         for item in self.history:
-            # 缩略展示，避免单行太长
             display_item = item.replace('\n', ' ')
             if len(display_item) > 40:
                 display_item = display_item[:37] + "..."
@@ -113,7 +152,7 @@ class ClipboardTranslatorApp:
             selected_text = self.history[selected_idx]
             self.root.clipboard_clear()
             self.root.clipboard_append(selected_text)
-            self.last_clipboard_text = selected_text # 避免自己触发监控
+            self.last_clipboard_text = selected_text  # 避免自己触发监控
             messagebox.showinfo("成功", "已成功将该历史文本写回系统剪贴板！")
         except IndexError:
             pass
@@ -139,11 +178,10 @@ class ClipboardTranslatorApp:
         try:
             selected_idx = self.history_listbox.curselection()[0]
             selected_text = self.history[selected_idx]
-            
+
             self.trans_text.delete(1.0, tk.END)
             self.trans_text.insert(tk.END, "正在翻译中，请稍候...")
-            
-            # 开启翻译守护线程
+
             thread = threading.Thread(target=self.run_translation, args=(selected_text,))
             thread.daemon = True
             thread.start()
@@ -151,38 +189,36 @@ class ClipboardTranslatorApp:
             messagebox.showwarning("提示", "请先在历史记录列表中单击选定要翻译的文本。")
 
     def run_translation(self, text):
-        """调用免费无限制的 MyMemory API 进行中英判定与翻译"""
-        # 判断首个字符是否为汉字以决定翻译方向
-        is_chinese = False
-        for char in text[:5]:
-            if '\u4e00' <= char <= '\u9fff':
-                is_chinese = True
-                break
-                
-        lang_pair = "zh-CN|en" if is_chinese else "en|zh-CN"
-        
+        """调用免费 MyMemory API 进行翻译，使用改进的语言检测"""
+        lang = self.detect_language(text)
+        lang_pair = "zh-CN|en" if lang == "zh" else "en|zh-CN"
+
         try:
             url = f"https://api.mymemory.translated.net/get?q={urllib.parse.quote(text)}&langpair={lang_pair}"
             req = urllib.request.Request(
-                url, 
+                url,
                 headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
             )
             with urllib.request.urlopen(req, timeout=8) as response:
                 res_data = json.loads(response.read().decode('utf-8'))
-                translated_text = res_data["matches"][0]["translation"]
-                
-                # 剔除可能的空内容
+
+                if res_data.get("responseStatus") == 200 and res_data.get("matches"):
+                    translated_text = res_data["matches"][0]["translation"]
+                else:
+                    translated_text = "翻译接口未返回有效翻译，请重试。"
+
                 if not translated_text:
                     translated_text = "翻译接口未返回有效翻译，请重试。"
-                    
-                # 写入 GUI
+
                 self.root.after(0, lambda: self.show_translation_result(translated_text))
-        except Exception as e:
+        except (urllib.error.URLError, urllib.error.HTTPError, json.JSONDecodeError, OSError) as e:
+            logging.warning(f"翻译请求失败: {e}")
             self.root.after(0, lambda: self.show_translation_result(f"翻译服务请求失败，请检查网络。错误: {e}"))
 
     def show_translation_result(self, result):
         self.trans_text.delete(1.0, tk.END)
         self.trans_text.insert(tk.END, result)
+
 
 if __name__ == "__main__":
     app_root = tk.Tk()

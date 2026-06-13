@@ -22,6 +22,9 @@ from datetime import datetime
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 import csv
+import logging
+
+logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
 
 
 class PortScanner:
@@ -269,8 +272,8 @@ class PortScanner:
 
                 sock.close()
 
-            except Exception as e:
-                pass
+            except (OSError, socket.error) as e:
+                logging.debug(f"扫描端口 {port} 失败: {e}")
 
             self.scanned_count += 1
             self.port_queue.task_done()
@@ -287,7 +290,7 @@ class PortScanner:
             # 接收响应
             banner = sock.recv(1024).decode('utf-8', errors='ignore').strip()
             return banner[:100] if banner else ""
-        except:
+        except (OSError, socket.error, socket.timeout):
             return ""
 
     def update_progress(self):
@@ -368,12 +371,7 @@ class PortScanner:
             messagebox.showerror("错误", f"导出失败: {e}")
 
 
-def main():
-    """主函数"""
+if __name__ == "__main__":
     root = tk.Tk()
     app = PortScanner(root)
     root.mainloop()
-
-
-if __name__ == "__main__":
-    main()

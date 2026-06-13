@@ -110,10 +110,6 @@ turtle.right(90)
 turtle.circle(200,60)
 turtle.done()
 
-turtle.left(135)
-turtle.fd(60)
-turtle.left(180)
-turtle.fd(60)
-turtle.right(90)
-turtle.circle(200,60)
-time.sleep(3)
+
+if __name__ == "__main__":
+    pass

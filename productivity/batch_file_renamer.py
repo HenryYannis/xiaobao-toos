@@ -6,7 +6,7 @@
 功能：
 - 支持多种重命名模式：添加前缀/后缀、替换字符、序号重命名、日期重命名
 - 支持预览重命名结果
-- 支持撤销操作
+- 支持撤销操作（基于重命名后的实际路径）
 - 支持正则表达式匹配
 
 作者：小宝科技帝国
@@ -15,12 +15,13 @@
 
 import os
 import re
-import json
-import shutil
 from datetime import datetime
 from pathlib import Path
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
+import logging
+
+logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
 
 
 class BatchFileRenamer:
@@ -29,15 +30,25 @@ class BatchFileRenamer:
     def __init__(self, root):
         self.root = root
         self.root.title("批量文件重命名工具")
-        self.root.geometry("900x700")
+        self.root.resizable(False, False)
 
         # 文件列表
         self.files = []
         self.original_names = []
         self.preview_names = []
 
+        # 撤销数据：存储 {旧路径: 新路径} 的映射
+        self.undo_data = None
+
         # 创建界面
         self.create_widgets()
+
+        # 窗口居中
+        self.root.update_idletasks()
+        w, h = 900, 700
+        x = (root.winfo_screenwidth() - w) // 2
+        y = (root.winfo_screenheight() - h) // 2
+        root.geometry(f"{w}x{h}+{x}+{y}")
 
     def create_widgets(self):
         """创建界面组件"""
@@ -176,12 +187,10 @@ class BatchFileRenamer:
 
     def update_mode_options(self):
         """更新模式选项显示"""
-        # 隐藏所有选项框架
         for frame in [self.prefix_frame, self.replace_frame, self.sequence_frame,
                       self.date_frame, self.regex_frame]:
             frame.grid_forget()
 
-        # 显示当前模式的选项
         mode = self.mode_var.get()
         if mode in ["prefix", "suffix"]:
             self.prefix_frame.grid(row=0, column=0, sticky=(tk.W, tk.E))
@@ -220,7 +229,6 @@ class BatchFileRenamer:
             if not os.path.isfile(filepath):
                 continue
 
-            # 应用过滤条件
             if extensions:
                 ext = os.path.splitext(filename)[1].lower()
                 if ext not in extensions:
@@ -238,12 +246,10 @@ class BatchFileRenamer:
 
     def update_file_list(self):
         """更新文件列表显示"""
-        # 清空列表
         for item in self.tree.get_children():
             self.tree.delete(item)
 
-        # 添加文件
-        for i, (original, new) in enumerate(zip(self.original_names, self.preview_names)):
+        for original, new in zip(self.original_names, self.preview_names):
             self.tree.insert("", tk.END, values=(original, new))
 
     def preview_rename(self):
@@ -279,7 +285,8 @@ class BatchFileRenamer:
             elif mode == "regex":
                 try:
                     new_name = re.sub(self.regex_pattern_var.get(), self.regex_replace_var.get(), filename)
-                except re.error:
+                except re.error as e:
+                    logging.warning(f"正则表达式错误: {e}")
                     new_name = filename
             else:
                 new_name = filename
@@ -295,16 +302,11 @@ class BatchFileRenamer:
             messagebox.showwarning("警告", "请先预览重命名结果")
             return
 
-        # 确认操作
         if not messagebox.askyesno("确认", f"确定要重命名 {len(self.files)} 个文件吗？"):
             return
 
-        # 保存撤销信息
-        self.undo_data = {
-            "directory": self.dir_var.get(),
-            "files": self.files.copy(),
-            "original_names": self.original_names.copy()
-        }
+        # 存储重命名映射：{新路径: 原路径}，用于撤销
+        rename_map = {}
 
         # 执行重命名
         success_count = 0
@@ -314,9 +316,14 @@ class BatchFileRenamer:
 
             try:
                 os.rename(old_path, new_path)
+                rename_map[new_path] = old_path  # 新路径 -> 原路径
                 success_count += 1
-            except Exception as e:
+            except OSError as e:
+                logging.error(f"重命名失败: {e}")
                 messagebox.showerror("错误", f"重命名失败: {e}")
+
+        # 保存撤销数据
+        self.undo_data = rename_map
 
         # 重新加载文件列表
         self.load_files()
@@ -325,30 +332,26 @@ class BatchFileRenamer:
         messagebox.showinfo("完成", f"重命名完成，成功 {success_count} 个文件")
 
     def undo_rename(self):
-        """撤销重命名"""
-        if not hasattr(self, 'undo_data'):
+        """撤销重命名 — 使用重命名映射中的新路径恢复原名"""
+        if not self.undo_data:
             messagebox.showwarning("警告", "没有可撤销的操作")
             return
 
-        # 确认操作
         if not messagebox.askyesno("确认", "确定要撤销上次重命名操作吗？"):
             return
 
-        # 执行撤销
+        # 执行撤销：从新路径恢复到原路径
         success_count = 0
-        for old_path, original_name in zip(self.undo_data["files"], self.undo_data["original_names"]):
-            directory = os.path.dirname(old_path)
-            current_name = os.path.basename(old_path)
-            original_path = os.path.join(directory, original_name)
-
+        for new_path, original_path in self.undo_data.items():
             try:
-                os.rename(old_path, original_path)
+                os.rename(new_path, original_path)
                 success_count += 1
-            except Exception as e:
+            except OSError as e:
+                logging.error(f"撤销失败: {e}")
                 messagebox.showerror("错误", f"撤销失败: {e}")
 
         # 清除撤销数据
-        del self.undo_data
+        self.undo_data = None
 
         # 重新加载文件列表
         self.load_files()
@@ -364,12 +367,7 @@ class BatchFileRenamer:
         self.status_var.set("列表已清空")
 
 
-def main():
-    """主函数"""
+if __name__ == "__main__":
     root = tk.Tk()
     app = BatchFileRenamer(root)
     root.mainloop()
-
-
-if __name__ == "__main__":
-    main()

@@ -1,0 +1,2 @@
+# 小宝工具箱 - 系统模块依赖
+# 无额外依赖，全部使用 Python 标准库 (winreg, subprocess, os)

@@ -15,13 +15,14 @@
 """
 
 import os
-import sys
 import time
 from datetime import datetime
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
-from PIL import ImageGrab, Image, ImageDraw
-import threading
+from PIL import ImageGrab, Image, ImageDraw, ImageTk
+import logging
+
+logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
 
 
 class ScreenCaptureTool:
@@ -30,7 +31,7 @@ class ScreenCaptureTool:
     def __init__(self, root):
         self.root = root
         self.root.title("屏幕截图工具")
-        self.root.geometry("600x500")
+        self.root.resizable(False, False)
 
         # 截图设置
         self.save_dir = os.path.join(os.path.expanduser("~"), "Desktop", "screenshots")
@@ -42,6 +43,13 @@ class ScreenCaptureTool:
 
         # 创建保存目录
         os.makedirs(self.save_dir, exist_ok=True)
+
+        # 窗口居中
+        self.root.update_idletasks()
+        w, h = 600, 550
+        x = (root.winfo_screenwidth() - w) // 2
+        y = (root.winfo_screenheight() - h) // 2
+        root.geometry(f"{w}x{h}+{x}+{y}")
 
     def create_widgets(self):
         """创建界面组件"""
@@ -69,7 +77,7 @@ class ScreenCaptureTool:
         region_frame.grid(row=1, column=0, sticky=(tk.W, tk.E), pady=5)
 
         ttk.Button(region_frame, text="区域截图", command=self.region_capture, width=15).grid(row=0, column=0, padx=(0, 10))
-        ttk.Label(region_frame, text="拖拽选择区域").grid(row=0, column=1)
+        ttk.Label(region_frame, text="拖拽选择区域（按 Esc 取消）").grid(row=0, column=1)
 
         # 窗口截图
         window_frame = ttk.Frame(mode_frame)
@@ -179,12 +187,13 @@ class ScreenCaptureTool:
 
     def save_image(self, image):
         """保存图片"""
-        # 获取保存路径
         filename = self.get_filename()
         filepath = os.path.join(self.save_dir, filename)
 
-        # 保存图片
         if self.format_var.get() == "JPEG":
+            # JPEG 不支持 RGBA，需转换为 RGB
+            if image.mode == 'RGBA':
+                image = image.convert('RGB')
             image.save(filepath, quality=self.quality_var.get())
         else:
             image.save(filepath)
@@ -201,160 +210,157 @@ class ScreenCaptureTool:
         """全屏截图"""
         # 隐藏窗口
         self.root.withdraw()
-        time.sleep(0.5)
+        time.sleep(0.3)
 
         try:
-            # 截取全屏
             screenshot = ImageGrab.grab()
-
-            # 保存截图
             filepath = self.save_image(screenshot)
-
-            # 显示成功消息
             messagebox.showinfo("成功", f"全屏截图已保存:\n{filepath}")
-
         except Exception as e:
+            logging.error(f"全屏截图失败: {e}")
             messagebox.showerror("错误", f"截图失败: {e}")
-
         finally:
-            # 显示窗口
             self.root.deiconify()
 
     def region_capture(self):
-        """区域截图"""
-        # 隐藏窗口
+        """区域截图 — 使用 Canvas 覆盖全屏实现区域选择"""
+        # 隐藏主窗口
         self.root.withdraw()
-        time.sleep(0.5)
+        time.sleep(0.3)
 
+        # 先截取全屏作为背景
         try:
-            # 创建选择窗口
-            self.selection_window = tk.Toplevel()
-            self.selection_window.attributes('-fullscreen', True)
-            self.selection_window.attributes('-alpha', 0.3)
-            self.selection_window.configure(bg='gray')
-
-            # 绑定事件
-            self.selection_window.bind('<Button-1>', self.on_mouse_down)
-            self.selection_window.bind('<B1-Motion>', self.on_mouse_drag)
-            self.selection_window.bind('<ButtonRelease-1>', self.on_mouse_up)
-            self.selection_window.bind('<Escape>', lambda e: self.selection_window.destroy())
-
-            # 初始化变量
-            self.start_x = 0
-            self.start_y = 0
-            self.rect = None
-
+            fullscreen_img = ImageGrab.grab()
         except Exception as e:
-            messagebox.showerror("错误", f"截图失败: {e}")
+            logging.error(f"截图失败: {e}")
+            self.root.deiconify()
+            return
+
+        # 创建全屏选择窗口
+        self.selection_window = tk.Toplevel()
+        self.selection_window.attributes('-fullscreen', True)
+        self.selection_window.attributes('-topmost', True)
+        self.selection_window.configure(bg='black')
+
+        # 使用 Canvas 显示半透明覆盖和选区
+        canvas = tk.Canvas(self.selection_window, cursor='cross', highlightthickness=0)
+        canvas.pack(fill=tk.BOTH, expand=True)
+
+        # 将截图转为 Tk 图片并显示（带暗化效果）
+        # 创建半透明遮罩效果
+        overlay = fullscreen_img.copy()
+        draw = ImageDraw.Draw(overlay)
+        draw.rectangle([0, 0, overlay.width, overlay.height], fill=(0, 0, 0, 100))
+
+        self._fullscreen_photo = ImageTk.PhotoImage(fullscreen_img)
+        self._overlay_photo = ImageTk.PhotoImage(overlay)
+
+        canvas.create_image(0, 0, anchor=tk.NW, image=self._fullscreen_photo)
+
+        # 选择区域变量
+        self._start_x = 0
+        self._start_y = 0
+        self._rect_id = None
+        self._canvas = canvas
+
+        def on_mouse_down(event):
+            self._start_x = event.x
+            self._start_y = event.y
+            if self._rect_id:
+                canvas.delete(self._rect_id)
+
+        def on_mouse_drag(event):
+            if self._rect_id:
+                canvas.delete(self._rect_id)
+            # 画选区矩形（边框为红色虚线）
+            self._rect_id = canvas.create_rectangle(
+                self._start_x, self._start_y, event.x, event.y,
+                outline='red', width=2, dash=(4, 4)
+            )
+
+        def on_mouse_up(event):
+            x1 = min(self._start_x, event.x)
+            y1 = min(self._start_y, event.y)
+            x2 = max(self._start_x, event.x)
+            y2 = max(self._start_y, event.y)
+
+            self.selection_window.destroy()
+
+            # 截取区域
+            if x2 - x1 > 10 and y2 - y1 > 10:
+                try:
+                    screenshot = ImageGrab.grab(bbox=(x1, y1, x2, y2))
+                    filepath = self.save_image(screenshot)
+                    messagebox.showinfo("成功", f"区域截图已保存:\n{filepath}")
+                except Exception as e:
+                    logging.error(f"区域截图失败: {e}")
+                    messagebox.showerror("错误", f"截图失败: {e}")
+
             self.root.deiconify()
 
-    def on_mouse_down(self, event):
-        """鼠标按下"""
-        self.start_x = event.x
-        self.start_y = event.y
+        def on_escape(event):
+            self.selection_window.destroy()
+            self.root.deiconify()
 
-        # 创建矩形
-        if self.rect:
-            self.selection_window.delete(self.rect)
-        self.rect = self.selection_window.create_rectangle(
-            self.start_x, self.start_y, self.start_x, self.start_y,
-            outline='red', width=2
-        )
-
-    def on_mouse_drag(self, event):
-        """鼠标拖拽"""
-        # 更新矩形
-        self.selection_window.coords(self.rect, self.start_x, self.start_y, event.x, event.y)
-
-    def on_mouse_up(self, event):
-        """鼠标释放"""
-        # 获取选择区域
-        x1 = min(self.start_x, event.x)
-        y1 = min(self.start_y, event.y)
-        x2 = max(self.start_x, event.x)
-        y2 = max(self.start_y, event.y)
-
-        # 关闭选择窗口
-        self.selection_window.destroy()
-
-        # 截取区域
-        if x2 - x1 > 10 and y2 - y1 > 10:
-            try:
-                screenshot = ImageGrab.grab(bbox=(x1, y1, x2, y2))
-                filepath = self.save_image(screenshot)
-                messagebox.showinfo("成功", f"区域截图已保存:\n{filepath}")
-            except Exception as e:
-                messagebox.showerror("错误", f"截图失败: {e}")
-
-        # 显示窗口
-        self.root.deiconify()
+        canvas.bind('<Button-1>', on_mouse_down)
+        canvas.bind('<B1-Motion>', on_mouse_drag)
+        canvas.bind('<ButtonRelease-1>', on_mouse_up)
+        canvas.bind('<Escape>', on_escape)
+        self.selection_window.bind('<Escape>', on_escape)
 
     def window_capture(self):
         """窗口截图"""
         # 隐藏窗口
         self.root.withdraw()
-        time.sleep(0.5)
+        time.sleep(0.3)
 
         try:
-            # 获取前台窗口
             import ctypes
             from ctypes import wintypes
 
             user32 = ctypes.windll.user32
             hwnd = user32.GetForegroundWindow()
 
-            # 获取窗口位置
             rect = wintypes.RECT()
             user32.GetWindowRect(hwnd, ctypes.byref(rect))
 
-            # 截取窗口
             screenshot = ImageGrab.grab(bbox=(rect.left, rect.top, rect.right, rect.bottom))
-
-            # 保存截图
             filepath = self.save_image(screenshot)
-
-            # 显示成功消息
             messagebox.showinfo("成功", f"窗口截图已保存:\n{filepath}")
 
         except Exception as e:
+            logging.error(f"窗口截图失败: {e}")
             messagebox.showerror("错误", f"截图失败: {e}")
-
         finally:
-            # 显示窗口
             self.root.deiconify()
 
     def delay_capture(self):
         """延时截图"""
         try:
             delay = int(self.delay_var.get())
+            if delay < 1:
+                raise ValueError
         except ValueError:
-            messagebox.showerror("错误", "请输入有效的延迟时间")
+            messagebox.showerror("错误", "请输入有效的延迟时间（正整数）")
             return
 
         # 隐藏窗口
         self.root.withdraw()
 
-        # 延时
+        # 延时倒计时
         for i in range(delay, 0, -1):
             self.status_var.set(f"倒计时: {i} 秒")
             self.root.update()
             time.sleep(1)
 
         try:
-            # 截取全屏
             screenshot = ImageGrab.grab()
-
-            # 保存截图
             filepath = self.save_image(screenshot)
-
-            # 显示成功消息
             messagebox.showinfo("成功", f"延时截图已保存:\n{filepath}")
-
         except Exception as e:
+            logging.error(f"延时截图失败: {e}")
             messagebox.showerror("错误", f"截图失败: {e}")
-
         finally:
-            # 显示窗口
             self.root.deiconify()
             self.status_var.set("就绪")
 
@@ -383,12 +389,7 @@ class ScreenCaptureTool:
         self.recent_listbox.delete(0, tk.END)
 
 
-def main():
-    """主函数"""
+if __name__ == "__main__":
     root = tk.Tk()
     app = ScreenCaptureTool(root)
     root.mainloop()
-
-
-if __name__ == "__main__":
-    main()

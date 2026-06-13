@@ -1,0 +1,60 @@
+[project]
+name = "xiaobao-tools"
+version = "1.0.0"
+description = "小宝工具箱 - 一站式 Windows 效率工具集合"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.8"
+authors = [
+    {name = "小宝科技帝国"}
+]
+keywords = ["windows", "tools", "utility", "tkinter", "gui"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Win32 (MS Windows)",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Utilities",
+]
+
+dependencies = [
+    "Pillow>=9.5.0",
+]
+
+[project.optional-dependencies]
+vision = [
+    "opencv-python>=4.8.0",
+    "mediapipe>=0.10.0",
+]
+game = [
+    "pygame>=2.5.0",
+]
+office = [
+    "pandas>=2.0.0",
+    "openpyxl>=3.1.0",
+]
+all = [
+    "xiaobao-tools[vision,game,office]",
+]
+dev = [
+    "flake8>=6.0.0",
+    "pylint>=2.17.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/A3studio/xiaobao-toos"
+Repository = "https://github.com/A3studio/xiaobao-toos"
+
+[build-system]
+requires = ["setuptools>=65.0"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[tool.flake8]
+max-line-length = 120
+exclude = [".git", "__pycache__", "venv", ".venv"]

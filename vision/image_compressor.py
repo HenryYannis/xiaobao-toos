@@ -21,6 +21,9 @@ import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 from PIL import Image
 import threading
+import logging
+
+logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
 
 
 class ImageCompressor:
@@ -287,7 +290,7 @@ class ImageCompressor:
                               f"压缩后大小: {self.format_size(compressed_size)}\n"
                               f"压缩率: {ratio:.1f}%")
 
-        except Exception as e:
+        except (OSError, IOError, ValueError) as e:
             messagebox.showerror("错误", f"预览失败: {e}")
 
     def start_compression(self):
@@ -362,7 +365,8 @@ class ImageCompressor:
                 self.root.after(0, self.update_file_status, i, compressed_size, ratio, "完成")
                 success += 1
 
-            except Exception as e:
+            except (OSError, ValueError, IOError) as e:
+                logging.warning(f"压缩失败: {os.path.basename(file)}, 原因: {e}")
                 self.root.after(0, self.update_file_status, i, 0, 0, f"失败: {e}")
 
             # 更新进度

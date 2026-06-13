@@ -15,15 +15,15 @@
 """
 
 import os
-import sys
 import shutil
 import tempfile
 import subprocess
-from pathlib import Path
 import tkinter as tk
 from tkinter import ttk, messagebox
 import threading
-from datetime import datetime
+import logging
+
+logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
 
 
 class SystemCleanupTool:
@@ -32,7 +32,7 @@ class SystemCleanupTool:
     def __init__(self, root):
         self.root = root
         self.root.title("系统垃圾清理工具")
-        self.root.geometry("800x600")
+        self.root.resizable(False, False)
 
         # 清理选项
         self.cleanup_options = {
@@ -49,6 +49,13 @@ class SystemCleanupTool:
 
         # 扫描垃圾文件
         self.scan_thread = None
+
+        # 窗口居中
+        self.root.update_idletasks()
+        w, h = 800, 600
+        x = (root.winfo_screenwidth() - w) // 2
+        y = (root.winfo_screenheight() - h) // 2
+        root.geometry(f"{w}x{h}+{x}+{y}")
 
     def create_widgets(self):
         """创建界面组件"""
@@ -136,6 +143,24 @@ class SystemCleanupTool:
             size_bytes /= 1024.0
         return f"{size_bytes:.2f} PB"
 
+    def _scan_directory_size(self, dir_path):
+        """通用目录大小扫描"""
+        total_size = 0
+        file_count = 0
+
+        if os.path.exists(dir_path):
+            for root, dirs, files in os.walk(dir_path):
+                for file in files:
+                    try:
+                        filepath = os.path.join(root, file)
+                        size = os.path.getsize(filepath)
+                        total_size += size
+                        file_count += 1
+                    except (OSError, PermissionError) as e:
+                        logging.debug(f"跳过不可访问文件: {filepath}, 原因: {e}")
+
+        return total_size, file_count
+
     def scan_temp_files(self):
         """扫描临时文件"""
         temp_dirs = [
@@ -148,40 +173,30 @@ class SystemCleanupTool:
         file_count = 0
 
         for temp_dir in temp_dirs:
-            if os.path.exists(temp_dir):
-                for root, dirs, files in os.walk(temp_dir):
-                    for file in files:
-                        try:
-                            filepath = os.path.join(root, file)
-                            size = os.path.getsize(filepath)
-                            total_size += size
-                            file_count += 1
-                        except:
-                            pass
+            size, count = self._scan_directory_size(temp_dir)
+            total_size += size
+            file_count += count
 
         return total_size, file_count
 
     def scan_recycle_bin(self):
         """扫描回收站"""
-        # 使用PowerShell获取回收站大小
         try:
-            cmd = "powershell -Command \"(New-Object -ComObject Shell.Application).NameSpace(10).Items() | Measure-Object -Property Size -Sum | Select-Object -ExpandProperty Sum\""
-            result = subprocess.run(cmd, capture_output=True, text=True, shell=True)
+            cmd = 'powershell -Command "(New-Object -ComObject Shell.Application).NameSpace(10).Items() | Measure-Object -Property Size -Sum | Select-Object -ExpandProperty Sum"'
+            result = subprocess.run(cmd, capture_output=True, text=True, shell=True, timeout=30)
             if result.returncode == 0 and result.stdout.strip():
                 size = int(result.stdout.strip())
-                return size, 1  # 回收站算作1个项目
-        except:
-            pass
+                return size, 1
+        except (subprocess.SubprocessError, ValueError, OSError) as e:
+            logging.warning(f"扫描回收站失败: {e}")
 
         return 0, 0
 
     def scan_browser_cache(self):
         """扫描浏览器缓存"""
         cache_dirs = [
-            # Chrome
             os.path.join(os.environ.get('LOCALAPPDATA', ''), 'Google', 'Chrome', 'User Data', 'Default', 'Cache'),
             os.path.join(os.environ.get('LOCALAPPDATA', ''), 'Google', 'Chrome', 'User Data', 'Default', 'Code Cache'),
-            # Edge
             os.path.join(os.environ.get('LOCALAPPDATA', ''), 'Microsoft', 'Edge', 'User Data', 'Default', 'Cache'),
             os.path.join(os.environ.get('LOCALAPPDATA', ''), 'Microsoft', 'Edge', 'User Data', 'Default', 'Code Cache'),
         ]
@@ -190,16 +205,9 @@ class SystemCleanupTool:
         file_count = 0
 
         for cache_dir in cache_dirs:
-            if os.path.exists(cache_dir):
-                for root, dirs, files in os.walk(cache_dir):
-                    for file in files:
-                        try:
-                            filepath = os.path.join(root, file)
-                            size = os.path.getsize(filepath)
-                            total_size += size
-                            file_count += 1
-                        except:
-                            pass
+            size, count = self._scan_directory_size(cache_dir)
+            total_size += size
+            file_count += count
 
         return total_size, file_count
 
@@ -214,38 +222,16 @@ class SystemCleanupTool:
         file_count = 0
 
         for log_dir in log_dirs:
-            if os.path.exists(log_dir):
-                for root, dirs, files in os.walk(log_dir):
-                    for file in files:
-                        try:
-                            filepath = os.path.join(root, file)
-                            size = os.path.getsize(filepath)
-                            total_size += size
-                            file_count += 1
-                        except:
-                            pass
+            size, count = self._scan_directory_size(log_dir)
+            total_size += size
+            file_count += count
 
         return total_size, file_count
 
     def scan_update_cache(self):
         """扫描Windows更新缓存"""
         update_dir = os.path.join(os.environ.get('SystemRoot', 'C:\\Windows'), 'SoftwareDistribution', 'Download')
-
-        total_size = 0
-        file_count = 0
-
-        if os.path.exists(update_dir):
-            for root, dirs, files in os.walk(update_dir):
-                for file in files:
-                    try:
-                        filepath = os.path.join(root, file)
-                        size = os.path.getsize(filepath)
-                        total_size += size
-                        file_count += 1
-                    except:
-                        pass
-
-        return total_size, file_count
+        return self._scan_directory_size(update_dir)
 
     def scan_thumbnails(self):
         """扫描缩略图缓存"""
@@ -262,14 +248,13 @@ class SystemCleanupTool:
                         size = os.path.getsize(filepath)
                         total_size += size
                         file_count += 1
-                    except:
-                        pass
+                    except (OSError, PermissionError) as e:
+                        logging.debug(f"跳过缩略图缓存文件: {file}, 原因: {e}")
 
         return total_size, file_count
 
     def start_scan(self):
         """开始扫描"""
-        # 清空结果
         for item in self.result_tree.get_children():
             self.result_tree.delete(item)
 
@@ -278,6 +263,7 @@ class SystemCleanupTool:
 
         # 在新线程中扫描
         self.scan_thread = threading.Thread(target=self.scan_worker)
+        self.scan_thread.daemon = True
         self.scan_thread.start()
 
     def scan_worker(self):
@@ -325,18 +311,15 @@ class SystemCleanupTool:
         if not messagebox.askyesno("确认", "确定要清理选中的项目吗？此操作不可撤销。"):
             return
 
-        # 执行清理
         for item in selected:
             values = self.result_tree.item(item, "values")
             type_name = values[0]
 
-            # 找到对应的清理函数
             for key, option in self.cleanup_options.items():
                 if option["name"] == type_name:
                     self.cleanup_by_type(key)
                     break
 
-        # 重新扫描
         self.start_scan()
         messagebox.showinfo("完成", "清理完成！")
 
@@ -345,12 +328,10 @@ class SystemCleanupTool:
         if not messagebox.askyesno("确认", "确定要清理所有垃圾文件吗？此操作不可撤销。"):
             return
 
-        # 执行清理
         for key in self.cleanup_options:
             if self.option_vars[key].get():
                 self.cleanup_by_type(key)
 
-        # 重新扫描
         self.start_scan()
         messagebox.showinfo("完成", "清理完成！")
 
@@ -383,21 +364,21 @@ class SystemCleanupTool:
                         try:
                             filepath = os.path.join(root, file)
                             os.remove(filepath)
-                        except:
-                            pass
-                    for dir in dirs:
+                        except (OSError, PermissionError) as e:
+                            logging.debug(f"无法删除文件: {filepath}, 原因: {e}")
+                    for dir_name in dirs:
                         try:
-                            dirpath = os.path.join(root, dir)
+                            dirpath = os.path.join(root, dir_name)
                             shutil.rmtree(dirpath)
-                        except:
-                            pass
+                        except (OSError, PermissionError) as e:
+                            logging.debug(f"无法删除目录: {dirpath}, 原因: {e}")
 
     def cleanup_recycle_bin(self):
         """清空回收站"""
         try:
-            subprocess.run("powershell -Command \"Clear-RecycleBin -Force\"", shell=True)
-        except:
-            pass
+            subprocess.run("powershell -Command \"Clear-RecycleBin -Force\"", shell=True, timeout=30)
+        except (subprocess.SubprocessError, OSError) as e:
+            logging.warning(f"清空回收站失败: {e}")
 
     def cleanup_browser_cache(self):
         """清理浏览器缓存"""
@@ -412,8 +393,8 @@ class SystemCleanupTool:
             if os.path.exists(cache_dir):
                 try:
                     shutil.rmtree(cache_dir)
-                except:
-                    pass
+                except (OSError, PermissionError) as e:
+                    logging.debug(f"无法删除缓存目录: {cache_dir}, 原因: {e}")
 
     def cleanup_system_logs(self):
         """清理系统日志"""
@@ -428,8 +409,8 @@ class SystemCleanupTool:
                         try:
                             filepath = os.path.join(root, file)
                             os.remove(filepath)
-                        except:
-                            pass
+                        except (OSError, PermissionError) as e:
+                            logging.debug(f"无法删除日志文件: {filepath}, 原因: {e}")
 
     def cleanup_update_cache(self):
         """清理Windows更新缓存"""
@@ -437,13 +418,12 @@ class SystemCleanupTool:
 
         if os.path.exists(update_dir):
             try:
-                # 需要停止Windows Update服务
-                subprocess.run("net stop wuauserv", shell=True)
+                subprocess.run("net stop wuauserv", shell=True, timeout=30)
                 shutil.rmtree(update_dir)
                 os.makedirs(update_dir)
-                subprocess.run("net start wuauserv", shell=True)
-            except:
-                pass
+                subprocess.run("net start wuauserv", shell=True, timeout=30)
+            except (subprocess.SubprocessError, OSError, PermissionError) as e:
+                logging.warning(f"清理更新缓存失败: {e}")
 
     def cleanup_thumbnails(self):
         """清理缩略图缓存"""
@@ -455,16 +435,11 @@ class SystemCleanupTool:
                     try:
                         filepath = os.path.join(thumb_dir, file)
                         os.remove(filepath)
-                    except:
-                        pass
-
-
-def main():
-    """主函数"""
-    root = tk.Tk()
-    app = SystemCleanupTool(root)
-    root.mainloop()
+                    except (OSError, PermissionError) as e:
+                        logging.debug(f"无法删除缩略图缓存: {file}, 原因: {e}")
 
 
 if __name__ == "__main__":
-    main()
+    root = tk.Tk()
+    app = SystemCleanupTool(root)
+    root.mainloop()

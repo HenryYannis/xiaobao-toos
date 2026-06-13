@@ -151,4 +151,8 @@ while cap.isOpened():
 # 释放资源
 cap.release()
 cv2.destroyAllWindows()
+
+
+if __name__ == "__main__":
+    pass
 hands.close()
