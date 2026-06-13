@@ -79,3 +79,4 @@ Desktop.ini
 # Build artifacts
 *.exe
 *.bat
+!system/Edge-Internet-Control/*.bat
