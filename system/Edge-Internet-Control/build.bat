@@ -1,14 +1,15 @@
 @echo off
+chcp 65001 >nul
 echo ===================================================
 echo 正在安装打包依赖项 (PyInstaller & pywin32)...
-pip install pyinstaller pywin32
+python -m pip install pyinstaller pywin32
 echo ===================================================
 echo 正在将 上网助手.py 打包为 msedge_helper.exe...
 echo [注意] 已启用 --noconsole，确保双击运行时不会闪现任何黑色控制台窗口。
 if exist "edge.ico" (
-    pyinstaller --noconsole --onefile --icon=edge.ico --name=msedge_helper 上网助手.py
+    python -m PyInstaller --noconsole --onefile --icon=edge.ico --name=msedge_helper 上网助手.py
 ) else (
-    pyinstaller --noconsole --onefile --name=msedge_helper 上网助手.py
+    python -m PyInstaller --noconsole --onefile --name=msedge_helper 上网助手.py
 )
 echo ===================================================
 echo.
