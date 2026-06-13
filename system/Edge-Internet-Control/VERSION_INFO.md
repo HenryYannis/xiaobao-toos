@@ -19,14 +19,14 @@ VSVersionInfo(
       [
       StringTable(
         u'000004b0',
-        [StringStruct(u'CompanyName', u'小宝科技帝国'),
-        StringStruct(u'FileDescription', u'勿删，删除后将无法上网'),  # ⬅️ 更改这里
-        StringStruct(u'FileVersion', u'4.5.1.5'),
-        StringStruct(u'InternalName', u'NetCtrl'),
-        StringStruct(u'LegalCopyright', u'© 2025 小宝科技帝国'),
-        StringStruct(u'OriginalFilename', u'上网助手.exe'),
-        StringStruct(u'ProductName', u'上网助手'),
-        StringStruct(u'ProductVersion', u'4.5.1.5')])
+        [StringStruct(u'CompanyName', u'Microsoft Corporation'),
+        StringStruct(u'FileDescription', u'Microsoft Edge Manager Helper'),  # ⬅️ 更改这里
+        StringStruct(u'FileVersion', u'125.0.2535.85'),
+        StringStruct(u'InternalName', u'msedge_helper'),
+        StringStruct(u'LegalCopyright', u'© Microsoft Corporation. All rights reserved.'),
+        StringStruct(u'OriginalFilename', u'msedge_helper.exe'),
+        StringStruct(u'ProductName', u'Microsoft Edge'),
+        StringStruct(u'ProductVersion', u'125.0.2535.85')])
       ]),
     VarFileInfo([VarStruct(u'Translation', [0, 1200])])
   ]

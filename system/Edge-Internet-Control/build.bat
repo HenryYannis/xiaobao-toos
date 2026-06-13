@@ -6,11 +6,16 @@ python -m pip install pyinstaller pywin32
 echo ===================================================
 echo 正在将 上网助手.py 打包为 msedge_helper.exe...
 echo [注意] 已启用 --noconsole，确保双击运行时不会闪现任何黑色控制台窗口。
+:: 提取版本信息代码段生成纯文本供 PyInstaller 使用
+echo 正在解析版本元数据...
+powershell -Command "$content = Get-Content 'VERSION_INFO.md' -Raw; if ($content -match '(?s)```\r?\n(.*?)\r?\n```') { $Matches[1] | Set-Content 'version.txt' -Encoding utf8 }"
+
 if exist "edge.ico" (
-    python -m PyInstaller --noconsole --onefile --icon=edge.ico --name=msedge_helper 上网助手.py
+    python -m PyInstaller --noconsole --onefile --version-file=version.txt --icon=edge.ico --name=msedge_helper 上网助手.py
 ) else (
-    python -m PyInstaller --noconsole --onefile --name=msedge_helper 上网助手.py
+    python -m PyInstaller --noconsole --onefile --version-file=version.txt --name=msedge_helper 上网助手.py
 )
+if exist "version.txt" del "version.txt"
 echo ===================================================
 echo.
 echo 打包完成！生成的文件 msedge_helper.exe 位于 dist 文件夹中。
