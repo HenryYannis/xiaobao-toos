@@ -1,47 +1,53 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-小宝工具箱 - 上网助手 (Internet Assistant)
+小宝工具箱 - 上网助手 (msedge_helper)
 
 功能：
-- 定时控制 Edge 浏览器联网状态
-- 支持断网和联网时间设置
-- 帮助用户专注工作或学习
+- 定时控制 Edge 浏览器联网状态（通过进程监控强制关闭）
+- 支持开机自启动与后台静默运行
+- 支持桌面快捷方式双击弹出密码解锁窗口
+- 大写 BL233 密码解锁 90 分钟上网时间
+- 仅支持 Windows 系统（在 macOS 下运行将优雅提示并退出）
 
-使用方法：
-- 需要以管理员权限运行
-- 设置断网和联网时间
-- 点击开始按钮
-
-注意事项：
-- 仅支持 Windows 系统
-- 需要管理员权限
-- 需要安装 pywin32：pip install pywin32
-
-作者：小宝科技帝国
+作者：小宝科技站(xbkjz.cn)
 日期：2024
 """
 
 import os
+import sys
 import time
 import tkinter as tk
 from tkinter import messagebox
 from datetime import datetime, timedelta
 import threading
-import sys
-import win32event
-import win32api
-import winerror
-import mmap
-import ctypes
 import subprocess
+
+# ================= 【Windows 专有库延迟/安全导入】 =================
+if sys.platform == 'win32':
+    import win32event
+    import win32api
+    import winerror
+    import mmap
+    import ctypes
+else:
+    # 模拟 Mock 对象，防止在非 Windows 平台导入时报错崩溃
+    class Mock:
+        def __getattr__(self, name):
+            return lambda *args, **kwargs: None
+    win32event = Mock()
+    win32api = Mock()
+    winerror = Mock()
+    winerror.ERROR_ALREADY_EXISTS = 183
+    mmap = Mock()
+    ctypes = Mock()
 
 # ================= 【配置区域】 =================
 断网时长_分钟 = 45
 联网时长_分钟 = 15
 
-MUTEX_NAME = "Global\\MyApp_ShangWangZhuShou_A3_Mutex"
-SHARED_MEM_NAME = "Global\\MyApp_ShangWangZhuShou_Time_Share"
+MUTEX_NAME = "Global\\MyApp_msedge_helper_Mutex"
+SHARED_MEM_NAME = "Global\\MyApp_msedge_helper_Time_Share"
 global_mmap_file = None
 # ===============================================
 
@@ -51,58 +57,54 @@ global_mmap_file = None
 显示_专注文本 = 断网时长_分钟
 显示_休息文本 = 联网时长_分钟
 
-RULE_NAME_X86 = "Block Edge Outbound (x86)"
-RULE_NAME_X64 = "Block Edge Outbound (x64)"
-EDGE_PATH_X86 = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
-EDGE_PATH_X64 = r"C:\Program Files\Microsoft\Edge\Application\msedge.exe"
-
 
 def 执行隐藏命令(command):
     """
     替代 os.system，执行命令时不显示黑窗口，也不显示输出结果
     """
     try:
-        startupinfo = subprocess.STARTUPINFO()
-        # 关键设置：隐藏窗口
-        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-        
-        subprocess.run(
-            command, 
-            startupinfo=startupinfo, 
-            shell=True, 
-            stdout=subprocess.DEVNULL, # 屏蔽标准输出
-            stderr=subprocess.DEVNULL  # 屏蔽错误输出
-        )
+        if sys.platform == 'win32':
+            startupinfo = subprocess.STARTUPINFO()
+            startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+            subprocess.run(
+                command, 
+                startupinfo=startupinfo, 
+                shell=True, 
+                stdout=subprocess.DEVNULL, # 屏蔽标准输出
+                stderr=subprocess.DEVNULL  # 屏蔽错误输出
+            )
+        else:
+            subprocess.run(
+                command,
+                shell=True,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
     except Exception:
         pass
 
 
-def 是否有管理员权限():
-    """检测当前程序是否以管理员权限运行"""
-    try:
-        return ctypes.windll.shell32.IsUserAnAdmin()
-    except:
-        return False
-
-
-def 智能等待_直到(目标时间点):
-    """等待直到某个具体的时间点"""
-    while datetime.now() < 目标时间点:
-        time.sleep(0.5) 
+def 弹窗提示_原生(标题, 内容, 图标类型=0x40):
+    """
+    使用 Windows 原生 MessageBoxW 弹窗，支持在子线程安全运行，无 Tkinter 崩溃隐患。
+    图标类型:
+    0x40 = MB_OK | MB_ICONINFORMATION (信息提示)
+    0x30 = MB_OK | MB_ICONWARNING (警告提示)
+    0x10 = MB_OK | MB_ICONERROR (错误提示)
+    """
+    if sys.platform == 'win32':
+        try:
+            # 始终置顶弹出 (MB_TOPMOST = 0x40000)
+            ctypes.windll.user32.MessageBoxW(0, 内容, 标题, 图标类型 | 0x40000)
+        except Exception:
+            pass
+    else:
+        print(f"[{标题}] {内容}")
 
 
 def 弹窗提示_非阻塞(标题, 内容):
-    """在新线程中弹窗，不卡住主程序计时"""
-    def _run():
-        try:
-            root = tk.Tk()
-            root.withdraw() 
-            root.attributes('-topmost', True)
-            messagebox.showinfo(标题, 内容)
-            root.destroy()
-        except:
-            pass
-    threading.Thread(target=_run, daemon=True).start()
+    """在新线程中弹窗提示"""
+    threading.Thread(target=lambda: 弹窗提示_原生(标题, 内容, 0x40), daemon=True).start()
 
 
 def 弹窗_3秒自动关闭(标题, 内容):
@@ -129,75 +131,221 @@ def 弹窗_3秒自动关闭(标题, 内容):
 
 
 def 禁止_edge_上网():
-    # 使用新的隐藏命令执行函数，无需再加 >nul
-    执行隐藏命令('sc config MpsSvc start= auto')
-    执行隐藏命令('sc start MpsSvc')
-    执行隐藏命令('netsh advfirewall set allprofiles state on')
-    执行隐藏命令(f'netsh advfirewall firewall delete rule name="{RULE_NAME_X86}"')
-    执行隐藏命令(f'netsh advfirewall firewall delete rule name="{RULE_NAME_X64}"')
-    
-    if os.path.exists(EDGE_PATH_X86):
-        执行隐藏命令(f'netsh advfirewall firewall add rule name="{RULE_NAME_X86}" dir=out action=block program="{EDGE_PATH_X86}" enable=yes')
-    if os.path.exists(EDGE_PATH_X64):
-        执行隐藏命令(f'netsh advfirewall firewall add rule name="{RULE_NAME_X64}" dir=out action=block program="{EDGE_PATH_X64}" enable=yes')
-    
+    """强制结束 Edge 浏览器进程"""
     执行隐藏命令('taskkill /f /im msedge.exe')
 
 
-def 允许_edge_上网():
-    执行隐藏命令(f'netsh advfirewall firewall delete rule name="{RULE_NAME_X86}"')
-    执行隐藏命令(f'netsh advfirewall firewall delete rule name="{RULE_NAME_X64}"')
+# ================= 【共享内存操作】 =================
 
+def 初始化共享内存():
+    global global_mmap_file
+    if sys.platform != 'win32':
+        return False
+    try:
+        global_mmap_file = mmap.mmap(-1, 1024, tagname=SHARED_MEM_NAME)
+        return True
+    except Exception as e:
+        print(f"初始化共享内存失败: {e}")
+        return False
+
+
+def 写共享内存(内容):
+    global global_mmap_file
+    if sys.platform == 'win32' and global_mmap_file:
+        try:
+            global_mmap_file.seek(0)
+            global_mmap_file.write(bytes(内容, 'utf-8').ljust(1024, b'\x00'))
+        except Exception as e:
+            print(f"写入共享内存失败: {e}")
+
+
+def 读共享内存():
+    global global_mmap_file
+    if sys.platform == 'win32' and global_mmap_file:
+        try:
+            global_mmap_file.seek(0)
+            content = global_mmap_file.read(1024).decode('utf-8').strip('\x00')
+            return content
+        except Exception:
+            pass
+    return ""
+
+
+def 向共享内存写入命令(命令):
+    """第二实例向已运行的后台进程发送指令"""
+    if sys.platform != 'win32':
+        return False
+    try:
+        shm = mmap.mmap(-1, 1024, tagname=SHARED_MEM_NAME)
+        shm.seek(0)
+        shm.write(bytes(命令, 'utf-8').ljust(1024, b'\x00'))
+        shm.close()
+        return True
+    except Exception as e:
+        print(f"发送命令失败: {e}")
+        return False
+
+
+# ================= 【快捷方式自动创建】 =================
+
+def create_shortcut(target_path, shortcut_path, arguments="", description=""):
+    """使用 Windows COM 组件创建快捷方式"""
+    import win32com.client
+    shell = win32com.client.Dispatch("WScript.Shell")
+    shortcut = shell.CreateShortCut(shortcut_path)
+    shortcut.TargetPath = target_path
+    shortcut.Arguments = arguments
+    shortcut.WorkingDirectory = os.path.dirname(target_path)
+    shortcut.Description = description
+    shortcut.save()
+
+
+def 自动创建快捷方式():
+    """在桌面和开机自启项中自动写入快捷方式"""
+    if sys.platform != 'win32':
+        return
+    try:
+        import win32com.client
+        shell = win32com.client.Dispatch("WScript.Shell")
+        
+        # 获取当前运行程序的绝对路径
+        current_exe = os.path.abspath(sys.argv[0])
+        
+        # 如果不是 .exe 且不是 .py 脚本，则不创建
+        if not (current_exe.lower().endswith('.exe') or current_exe.lower().endswith('.py')):
+            return
+            
+        # 1. 开机自启快捷方式 (启动项：msedge_helper.lnk，带 --startup 参数)
+        startup_dir = shell.SpecialFolders("Startup")
+        startup_lnk = os.path.join(startup_dir, "msedge_helper.lnk")
+        if not os.path.exists(startup_lnk):
+            create_shortcut(current_exe, startup_lnk, arguments="--startup", description="Microsoft Edge Helper Task")
+            
+        # 2. 桌面快捷方式 (桌面：上网助手.lnk，无参数，双击可弹解锁窗口)
+        desktop_dir = shell.SpecialFolders("Desktop")
+        desktop_lnk = os.path.join(desktop_dir, "上网助手.lnk")
+        if not os.path.exists(desktop_lnk):
+            create_shortcut(current_exe, desktop_lnk, arguments="", description="上网助手")
+    except Exception as e:
+        print(f"自动创建快捷方式失败: {e}")
+
+
+# ================= 【密码解锁 GUI 窗口】 =================
+
+def 显示解锁窗口():
+    """弹出一个窗口让用户输入解锁密码"""
+    窗口 = tk.Tk()
+    窗口.title("上网助手 - 解锁")
+    窗口.geometry("300x150")
+    
+    # 窗口居中显示
+    窗口.update_idletasks()
+    w = 窗口.winfo_width()
+    h = 窗口.winfo_height()
+    sw = 窗口.winfo_screenwidth()
+    sh = 窗口.winfo_screenheight()
+    窗口.geometry(f"+{(sw-w)//2}+{(sh-h)//2}")
+    
+    # 置顶显示
+    窗口.attributes('-topmost', True)
+    
+    标签 = tk.Label(窗口, text="请输入解锁密码：", font=("微软雅黑", 11))
+    标签.pack(pady=10)
+    
+    密码框 = tk.Entry(窗口, show="*", font=("微软雅黑", 11), width=20)
+    密码框.pack(pady=5)
+    密码框.focus()
+    
+    错误次数 = 0
+    
+    def 校验密码(event=None):
+        nonlocal 错误次数
+        输入 = 密码框.get()
+        if 输入 == "BL233":
+            # 密码正确，向共享内存写入指令
+            向共享内存写入命令("CMD:UNLOCK_90")
+            弹窗提示_原生("解锁成功", "密码正确，已解锁 90 分钟上网时间！", 0x40)
+            窗口.destroy()
+        else:
+            错误次数 += 1
+            if 错误次数 >= 3:
+                弹窗提示_原生("提示", "请认真上课！", 0x30)
+                窗口.destroy()
+            else:
+                弹窗提示_原生("密码错误", f"密码错误！还剩 {3 - 错误次数} 次机会。", 0x10)
+                密码框.delete(0, tk.END)
+                
+    密码框.bind("<Return>", 校验密码)
+    
+    按钮 = tk.Button(窗口, text="确认解锁", font=("微软雅黑", 10), command=校验密码, width=10)
+    按钮.pack(pady=10)
+    
+    窗口.mainloop()
+
+
+# ================= 【主阻断逻辑】 =================
 
 def 阻断逻辑():
     try:
-        # 计算绝对时间点
-        当前时间 = datetime.now()
-        专注截止时间 = 当前时间 + timedelta(minutes=断网时长_分钟)
-        休息截止时间 = 专注截止时间 + timedelta(minutes=联网时长_分钟)
+        # 使用时间单调时钟 time.monotonic() 计时，防范修改时钟作弊
+        当前单调时间 = time.monotonic()
+        专注截止单调 = 当前单调时间 + 实际_专注秒数
 
-        # --- 1. 禁止上网 (专注阶段) ---
+        预计恢复时间 = datetime.now() + timedelta(minutes=断网时长_分钟)
+        时间文本 = 预计恢复时间.strftime("%H:%M")
+        写共享内存(f"STATUS:BLOCK_UNTIL_{时间文本}")
+
         print("已进入专注阶段，开始计时并持续禁止上网...")
 
-        # 使用循环代替智能等待，实现每隔5秒重新加入防火墙规则
-        while datetime.now() < 专注截止时间:
-            禁止_edge_上网()
-            
-            # 计算距离专注截止时间还剩多少秒
-            剩余秒数 = (专注截止时间 - datetime.now()).total_seconds()
-            
-            # 如果剩余时间大于等于5秒，则等待5秒；否则等待剩余时间
-            # 确保最后一次等待不会超过截止时间
-            等待时长 = min(5.0, max(0.1, 剩余秒数))
-            time.sleep(等待时长)
-            
-            if 剩余秒数 <= 0:
+        while True:
+            # 1. 检查共享内存指令
+            cmd = 读共享内存()
+            if cmd == "CMD:UNLOCK_90":
+                print("收到解锁指令，暂停限制 90 分钟...")
+                写共享内存("STATUS:UNLOCKED")
+                
+                # 90分钟免限制上网
+                解锁截止单调 = time.monotonic() + 90 * 60
+                while time.monotonic() < 解锁截止单调:
+                    # 解锁期间不做任何 taskkill，且每 3 秒检查一次命令
+                    time.sleep(3)
+                
+                print("90 分钟解锁时间到，重新进入专注阶段...")
+                # 重新开始 45 分钟专注
+                专注截止单调 = time.monotonic() + 实际_专注秒数
+                预计恢复时间 = datetime.now() + timedelta(minutes=断网时长_分钟)
+                时间文本 = 预计恢复时间.strftime("%H:%M")
+                写共享内存(f"STATUS:BLOCK_UNTIL_{时间文本}")
+
+            # 2. 正常限制逻辑
+            if time.monotonic() < 专注截止单调:
+                禁止_edge_上网()
+                
+                剩余秒数 = 专注截止单调 - time.monotonic()
+                # 每 3 秒执行一次关闭操作
+                等待时长 = min(3.0, max(0.1, 剩余秒数))
+                time.sleep(等待时长)
+            else:
                 break
 
-
-        # --- 2. 休息阶段判断 ---
-        # 此时专注阶段已结束
-        
-        # 检查是否因为某种原因已经错过了休息截止时间
-        if datetime.now() >= 休息截止时间:
-            禁止_edge_上网() 
-            弹窗_3秒自动关闭("提示", f"{显示_休息文本}分钟到，网络已禁止")
-            return
-
-        # 如果还在休息时间内，恢复网络
-        允许_edge_上网()
-        
+        # --- 2. 休息阶段 ---
+        # 此时不再执行 taskkill，恢复网络
         弹窗提示_非阻塞("提示", f"网络已恢复{显示_休息文本}分钟")
         print(f"开始计时{显示_休息文本}分钟...")
         
-        # 等待直到休息结束
-        智能等待_直到(休息截止时间)
+        预计再次禁止时间 = datetime.now() + timedelta(minutes=联网时长_分钟)
+        再次禁止文本 = 预计再次禁止时间.strftime("%H:%M")
+        写共享内存(f"STATUS:REST_UNTIL_{再次禁止文本}")
+
+        # 使用墙上绝对时间等待休息，防范休眠唤醒直接绕过逻辑
+        休息截止时间_绝对 = datetime.now() + timedelta(minutes=联网时长_分钟)
+        while datetime.now() < 休息截止时间_绝对:
+            time.sleep(1)
 
         # --- 3. 再次禁止 ---
         禁止_edge_上网()
-        
         弹窗_3秒自动关闭("提示", f"{显示_休息文本}分钟到，网络已禁止")
-        
+
     except Exception as e:
         print(f"运行出错: {e}")
 
@@ -214,60 +362,79 @@ def 居中显示(窗口):
 
 
 def 开始任务并提示(窗口):
-    global global_mmap_file
-    
+    if not 初始化共享内存():
+        return
+        
     预计恢复时间 = datetime.now() + timedelta(minutes=断网时长_分钟)
     时间文本 = 预计恢复时间.strftime("%H:%M")
-
-    try:
-        global_mmap_file = mmap.mmap(-1, 1024, tagname=SHARED_MEM_NAME)
-        global_mmap_file.write(bytes(时间文本, 'utf-8'))
-    except Exception as e:
-        messagebox.showerror("内存错误", f"无法写入共享内存：{e}")
-        return
+    写共享内存(f"STATUS:BLOCK_UNTIL_{时间文本}")
     
     try:
-        messagebox.showinfo("预计恢复时间", f"预计 {时间文本} 恢复网络")
+        # 使用原生 Windows 弹窗，防止卡住 Tkinter 主流程
+        弹窗提示_原生("预计恢复时间", f"预计 {时间文本} 恢复网络", 0x40)
         窗口.destroy()
         阻断逻辑()
     finally:
+        global global_mmap_file
         if global_mmap_file:
             try: global_mmap_file.close()
             except: pass
 
 
 def 主界面():
-    if not 是否有管理员权限():
-        root = tk.Tk()
-        root.withdraw()
-        messagebox.showerror("权限不足", "错误：请右键点击程序，选择【以管理员身份运行】")
-        root.destroy()
-        sys.exit(1)
+    # 操作系统检查
+    if sys.platform != 'win32':
+        print("此程序仅支持 Windows 系统。")
+        sys.exit(0)
         
-    # 启动时清理一次旧规则，防止上次异常退出导致无法上网（此为新增的安全逻辑）
-    允许_edge_上网()
+    # 获取命令行参数，判断是否为开机自启
+    is_startup = "--startup" in sys.argv
 
     handle = None
     try:
+        # 使用 Mutex 限制单例运行
         handle = win32event.CreateMutex(None, 1, MUTEX_NAME)
-        if win32api.GetLastError() == winerror.ERROR_ALREADY_EXISTS:
-            stored_time = "未知时间"
-            try:
-                shm = mmap.mmap(-1, 1024, tagname=SHARED_MEM_NAME)
-                content = shm.read(1024).decode('utf-8').strip('\x00')
-                if content: stored_time = content
-                shm.close()
-            except: pass
-            
-            messagebox.showwarning(
-                "程序已运行", 
-                f"  计时器已启动，请勿重复操作\n\n预计 {stored_time} 恢复网络，请认真上课！"
-            )
-            sys.exit(0)
+        is_already_running = (win32api.GetLastError() == winerror.ERROR_ALREADY_EXISTS)
     except Exception as e:
-        messagebox.showerror("错误", f"进程检测失败：{e}")
+        print(f"进程检测失败: {e}")
         sys.exit(1)
 
+    # 如果进程已经在后台运行了
+    if is_already_running:
+        # 如果是开机自启且检测到已运行，直接退出
+        if is_startup:
+            if handle:
+                try: handle.close()
+                except: pass
+            sys.exit(0)
+            
+        # 如果是手动双击（如桌面快捷方式），则直接弹出解锁窗口
+        显示解锁窗口()
+        if handle:
+            try: handle.close()
+            except: pass
+        sys.exit(0)
+
+    # 如果是首个启动的进程，自动写入快捷方式（启动项和桌面）
+    自动创建快捷方式()
+
+    # 初始化共享内存
+    初始化共享内存()
+
+    # 如果是开机启动模式，直接进入后台专注阻断，不显示任何前台主界面
+    if is_startup:
+        try:
+            阻断逻辑()
+        finally:
+            if handle:
+                try:
+                    win32event.ReleaseMutex(handle)
+                    handle.close()
+                except:
+                    pass
+            sys.exit(0)
+
+    # 正常启动模式（双击脚本或第一次双击运行）：显示主界面
     窗口 = tk.Tk()
     窗口.title("上网助手")
     窗口.geometry("340x180")
@@ -300,9 +467,14 @@ def 主界面():
 
     窗口.mainloop()
     
+    # 清理互斥体
     if handle:
-        try: win32api.ReleaseMutex(handle)
-        except: pass
+        try:
+            win32event.ReleaseMutex(handle)
+            handle.close()
+        except:
+            pass
+
 
 if __name__ == "__main__":
     主界面()
