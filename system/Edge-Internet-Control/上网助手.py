@@ -4,11 +4,11 @@
 小宝工具箱 - 上网助手 (msedge_helper)
 
 功能：
-- 定时控制 Edge 浏览器联网状态（通过进程监控强制关闭）
-- 支持开机自启动与后台静默运行
-- 支持桌面快捷方式双击弹出密码解锁窗口
-- 大写 BL233 密码解锁 90 分钟上网时间
-- 仅支持 Windows 系统（在 macOS 下运行将优雅提示并退出）
+- 启动即进入后台运行，每 3 秒强制关闭一次 Edge 浏览器（无需前台主界面，防绕过）
+- 双击桌面快捷方式若检测到已运行，则直接弹出密码解锁窗口（密码为大写 BL233）
+- 密码校验成功后，释放 90 分钟的临时上网时间，超时后重新自动锁定
+- 仅支持 Windows 系统（在 macOS 下运行优雅退出）
+- 启动即在代码最前端隐藏控制台黑窗口，不使用 pyinstaller --noconsole，避免杀软误报
 
 作者：小宝科技站(xbkjz.cn)
 日期：2024
@@ -23,13 +23,19 @@ from datetime import datetime, timedelta
 import threading
 import subprocess
 
-# ================= 【Windows 专有库延迟/安全导入】 =================
+# ================= 【Windows 最前端控制台隐藏 & 安全导入】 =================
 if sys.platform == 'win32':
     import win32event
     import win32api
     import winerror
     import mmap
     import ctypes
+    
+    # 【免报毒隐藏技术】：获取当前 Python 控制台的句柄并隐藏，实现完美后台静默
+    hwnd = ctypes.windll.kernel32.GetConsoleWindow()
+    if hwnd:
+        # SW_HIDE = 0
+        ctypes.windll.user32.ShowWindow(hwnd, 0)
 else:
     # 模拟 Mock 对象，防止在非 Windows 平台导入时报错崩溃
     class Mock:
@@ -186,50 +192,6 @@ def 向共享内存写入命令(命令):
         return False
 
 
-# ================= 【快捷方式自动创建】 =================
-
-def create_shortcut(target_path, shortcut_path, arguments="", description=""):
-    """使用 Windows COM 组件创建快捷方式"""
-    import win32com.client
-    shell = win32com.client.Dispatch("WScript.Shell")
-    shortcut = shell.CreateShortCut(shortcut_path)
-    shortcut.TargetPath = target_path
-    shortcut.Arguments = arguments
-    shortcut.WorkingDirectory = os.path.dirname(target_path)
-    shortcut.Description = description
-    shortcut.save()
-
-
-def 自动创建快捷方式():
-    """在桌面和开机自启项中自动写入快捷方式"""
-    if sys.platform != 'win32':
-        return
-    try:
-        import win32com.client
-        shell = win32com.client.Dispatch("WScript.Shell")
-        
-        # 获取当前运行程序的绝对路径
-        current_exe = os.path.abspath(sys.argv[0])
-        
-        # 如果不是 .exe 且不是 .py 脚本，则不创建
-        if not (current_exe.lower().endswith('.exe') or current_exe.lower().endswith('.py')):
-            return
-            
-        # 1. 开机自启快捷方式 (启动项：msedge_helper.lnk，带 --startup 参数)
-        startup_dir = shell.SpecialFolders("Startup")
-        startup_lnk = os.path.join(startup_dir, "msedge_helper.lnk")
-        if not os.path.exists(startup_lnk):
-            create_shortcut(current_exe, startup_lnk, arguments="--startup", description="Microsoft Edge Helper Task")
-            
-        # 2. 桌面快捷方式 (桌面：上网助手.lnk，无参数，双击可弹解锁窗口)
-        desktop_dir = shell.SpecialFolders("Desktop")
-        desktop_lnk = os.path.join(desktop_dir, "上网助手.lnk")
-        if not os.path.exists(desktop_lnk):
-            create_shortcut(current_exe, desktop_lnk, arguments="", description="上网助手")
-    except Exception as e:
-        print(f"自动创建快捷方式失败: {e}")
-
-
 # ================= 【密码解锁 GUI 窗口】 =================
 
 def 显示解锁窗口():
@@ -337,7 +299,7 @@ def 阻断逻辑():
         再次禁止文本 = 预计再次禁止时间.strftime("%H:%M")
         写共享内存(f"STATUS:REST_UNTIL_{再次禁止文本}")
 
-        # 使用墙上绝对时间等待休息，防范休眠唤醒直接绕过逻辑
+        # 使用绝对时间，防范专注期电脑休眠醒来直接玩 15 分钟
         休息截止时间_绝对 = datetime.now() + timedelta(minutes=联网时长_分钟)
         while datetime.now() < 休息截止时间_绝对:
             time.sleep(1)
@@ -350,45 +312,11 @@ def 阻断逻辑():
         print(f"运行出错: {e}")
 
 
-def 居中显示(窗口):
-    窗口.update_idletasks()
-    宽 = 窗口.winfo_width()
-    高 = 窗口.winfo_height()
-    屏幕宽 = 窗口.winfo_screenwidth()
-    屏幕高 = 窗口.winfo_screenheight()
-    x = (屏幕宽 - 宽) // 2
-    y = (屏幕高 - 高) // 2
-    窗口.geometry(f"{宽}x{高}+{x}+{y}")
-
-
-def 开始任务并提示(窗口):
-    if not 初始化共享内存():
-        return
-        
-    预计恢复时间 = datetime.now() + timedelta(minutes=断网时长_分钟)
-    时间文本 = 预计恢复时间.strftime("%H:%M")
-    写共享内存(f"STATUS:BLOCK_UNTIL_{时间文本}")
-    
-    try:
-        # 使用原生 Windows 弹窗，防止卡住 Tkinter 主流程
-        弹窗提示_原生("预计恢复时间", f"预计 {时间文本} 恢复网络", 0x40)
-        窗口.destroy()
-        阻断逻辑()
-    finally:
-        global global_mmap_file
-        if global_mmap_file:
-            try: global_mmap_file.close()
-            except: pass
-
-
-def 主界面():
+def 主入口():
     # 操作系统检查
     if sys.platform != 'win32':
         print("此程序仅支持 Windows 系统。")
         sys.exit(0)
-        
-    # 获取命令行参数，判断是否为开机自启
-    is_startup = "--startup" in sys.argv
 
     handle = None
     try:
@@ -399,82 +327,29 @@ def 主界面():
         print(f"进程检测失败: {e}")
         sys.exit(1)
 
-    # 如果进程已经在后台运行了
+    # 如果检测到后台已经有本进程在运行
     if is_already_running:
-        # 如果是开机自启且检测到已运行，直接退出
-        if is_startup:
-            if handle:
-                try: handle.close()
-                except: pass
-            sys.exit(0)
-            
-        # 如果是手动双击（如桌面快捷方式），则直接弹出解锁窗口
+        # 说明是第二次双击启动（用户想呼出密码界面），直接弹出解锁窗口
         显示解锁窗口()
         if handle:
             try: handle.close()
             except: pass
         sys.exit(0)
 
-    # 如果是首个启动的进程，自动写入快捷方式（启动项和桌面）
-    自动创建快捷方式()
-
-    # 初始化共享内存
+    # 如果是首个运行的实例，直接作为主程序静默在后台启动，直接进入断网循环，无需任何人工确认
     初始化共享内存()
 
-    # 如果是开机启动模式，直接进入后台专注阻断，不显示任何前台主界面
-    if is_startup:
-        try:
-            阻断逻辑()
-        finally:
-            if handle:
-                try:
-                    win32event.ReleaseMutex(handle)
-                    handle.close()
-                except:
-                    pass
-            sys.exit(0)
-
-    # 正常启动模式（双击脚本或第一次双击运行）：显示主界面
-    窗口 = tk.Tk()
-    窗口.title("上网助手")
-    窗口.geometry("340x180")
-
-    窗口.update()
-    居中显示(窗口)
-
-    标签 = tk.Label(窗口, text="请选择一个操作", font=("微软雅黑", 12 ,"bold"))
-    标签.pack(pady=10)
-
-    按钮文字 = f"{显示_专注文本}分钟后恢复网络"
-
-    按钮1 = tk.Button(
-        窗口,
-        text=按钮文字,
-        width=20,
-        height=2,
-        command=lambda: 开始任务并提示(窗口)
-    )
-    按钮1.pack(pady=5)
-
-    按钮2 = tk.Button(
-        窗口,
-        text="退出",
-        width=20,
-        height=2,
-        command=窗口.destroy
-    )
-    按钮2.pack()
-
-    窗口.mainloop()
-    
-    # 清理互斥体
-    if handle:
-        try:
-            win32event.ReleaseMutex(handle)
-            handle.close()
-        except:
-            pass
+    try:
+        阻断逻辑()
+    finally:
+        if handle:
+            try:
+                win32event.ReleaseMutex(handle)
+                handle.close()
+            except:
+                pass
+        sys.exit(0)
 
 
 if __name__ == "__main__":
-    主界面()
+    主入口()
