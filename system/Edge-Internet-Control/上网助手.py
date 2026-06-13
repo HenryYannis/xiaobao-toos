@@ -200,13 +200,13 @@ def 显示解锁窗口():
     窗口.title("上网助手 - 解锁")
     窗口.geometry("300x150")
     
-    # 窗口居中显示
+    # 窗口置顶并置于屏幕正中央
     窗口.update_idletasks()
-    w = 窗口.winfo_width()
-    h = 窗口.winfo_height()
     sw = 窗口.winfo_screenwidth()
     sh = 窗口.winfo_screenheight()
-    窗口.geometry(f"+{(sw-w)//2}+{(sh-h)//2}")
+    x = (sw - 300) // 2
+    y = (sh - 150) // 2
+    窗口.geometry(f"300x150+{x}+{y}")
     
     # 置顶显示
     窗口.attributes('-topmost', True)
