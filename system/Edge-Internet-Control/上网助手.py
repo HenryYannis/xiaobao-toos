@@ -195,23 +195,19 @@ def 向共享内存写入命令(命令):
 # ================= 【密码解锁 GUI 窗口】 =================
 
 def 显示解锁窗口():
-    """弹出一个窗口让用户输入解锁密码"""
+    """弹出一个窗口让用户输入密码"""
     窗口 = tk.Tk()
-    窗口.title("上网助手 - 解锁")
+    窗口.title("上网助手")
     窗口.geometry("300x150")
     
     # 窗口置顶并置于屏幕正中央
-    窗口.update_idletasks()
-    sw = 窗口.winfo_screenwidth()
-    sh = 窗口.winfo_screenheight()
-    x = (sw - 300) // 2
-    y = (sh - 150) // 2
-    窗口.geometry(f"300x150+{x}+{y}")
+    窗口.update()
+    居中显示(窗口)
     
     # 置顶显示
     窗口.attributes('-topmost', True)
     
-    标签 = tk.Label(窗口, text="请输入解锁密码：", font=("微软雅黑", 11))
+    标签 = tk.Label(窗口, text="请输入密码：", font=("微软雅黑", 11))
     标签.pack(pady=10)
     
     密码框 = tk.Entry(窗口, show="*", font=("微软雅黑", 11), width=20)
@@ -226,7 +222,7 @@ def 显示解锁窗口():
         if 输入 == "BL233":
             # 密码正确，向共享内存写入指令
             向共享内存写入命令("CMD:UNLOCK_90")
-            弹窗提示_原生("解锁成功", "密码正确，已解锁 90 分钟上网时间！", 0x40)
+            弹窗提示_原生("验证成功", "密码正确，已获得 90 分钟上网时间！", 0x40)
             窗口.destroy()
         else:
             错误次数 += 1
@@ -239,7 +235,7 @@ def 显示解锁窗口():
                 
     密码框.bind("<Return>", 校验密码)
     
-    按钮 = tk.Button(窗口, text="确认解锁", font=("微软雅黑", 10), command=校验密码, width=10)
+    按钮 = tk.Button(窗口, text="确认", font=("微软雅黑", 10), command=校验密码, width=10)
     按钮.pack(pady=10)
     
     窗口.mainloop()
@@ -257,13 +253,10 @@ def 阻断逻辑():
         时间文本 = 预计恢复时间.strftime("%H:%M")
         写共享内存(f"STATUS:BLOCK_UNTIL_{时间文本}")
 
-        print("已进入专注阶段，开始计时并持续禁止上网...")
-
         while True:
             # 1. 检查共享内存指令
             cmd = 读共享内存()
             if cmd == "CMD:UNLOCK_90":
-                print("收到解锁指令，暂停限制 90 分钟...")
                 写共享内存("STATUS:UNLOCKED")
                 
                 # 90分钟免限制上网
@@ -272,7 +265,6 @@ def 阻断逻辑():
                     # 解锁期间不做任何 taskkill，且每 3 秒检查一次命令
                     time.sleep(3)
                 
-                print("90 分钟解锁时间到，重新进入专注阶段...")
                 # 重新开始 45 分钟专注
                 专注截止单调 = time.monotonic() + 实际_专注秒数
                 预计恢复时间 = datetime.now() + timedelta(minutes=断网时长_分钟)
@@ -293,7 +285,6 @@ def 阻断逻辑():
         # --- 2. 休息阶段 ---
         # 此时不再执行 taskkill，恢复网络
         弹窗提示_非阻塞("提示", f"网络已恢复{显示_休息文本}分钟")
-        print(f"开始计时{显示_休息文本}分钟...")
         
         预计再次禁止时间 = datetime.now() + timedelta(minutes=联网时长_分钟)
         再次禁止文本 = 预计再次禁止时间.strftime("%H:%M")
@@ -309,13 +300,12 @@ def 阻断逻辑():
         弹窗_3秒自动关闭("提示", f"{显示_休息文本}分钟到，网络已禁止")
 
     except Exception as e:
-        print(f"运行出错: {e}")
+        pass
 
 
 def 主入口():
     # 操作系统检查
     if sys.platform != 'win32':
-        print("此程序仅支持 Windows 系统。")
         sys.exit(0)
 
     handle = None
@@ -324,7 +314,6 @@ def 主入口():
         handle = win32event.CreateMutex(None, 1, MUTEX_NAME)
         is_already_running = (win32api.GetLastError() == winerror.ERROR_ALREADY_EXISTS)
     except Exception as e:
-        print(f"进程检测失败: {e}")
         sys.exit(1)
 
     # 如果检测到后台已经有本进程在运行
